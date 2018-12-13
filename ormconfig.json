@@ -1,24 +1,26 @@
 [{
-    "name": "mysql",
+    "name": "feedbackdb",
     "type": "mysql",
     "host": "localhost",
     "port": 3306,
     "username": "root",
     "password": "6969",
-    "database": "feedbackdb",
-    "synchronize": true,
+    "database": "mysql",
+    "synchronize": false,
+    "logging": true,
+    "logger": "file",
     "entities": [
-        "src/entities/**/*.ts"
+        "src/data/entities/**/*.ts"
     ],
     "migrations": [
-        "src/migration/**/*.ts"
+        "src/data/migration/**/*.ts"
     ],
     "subscribers": [
-        "src/subscriber/**/*.ts"
+        "src/data/subscriber/**/*.ts"
     ],
     "cli": {
-        "entitiesDir": "src/entities",
-        "migrationsDir": "src/migration",
-        "subscribersDir": "src/subscriber"
+        "entitiesDir": "src/data/entities",
+        "migrationsDir": "src/data/migration",
+        "subscribersDir": "src/data/subscriber"
     }
 }]
