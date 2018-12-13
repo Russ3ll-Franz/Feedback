@@ -1,0 +1,9 @@
+[
+  {
+      "id": 1,
+      "email": "martin@telerikacademy.com",
+      "password": "123",
+      "avatarUrl": "public\\images\\default.png",
+      "isAdmin": true
+  }
+]
