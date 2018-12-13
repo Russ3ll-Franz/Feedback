@@ -16,7 +16,7 @@ export class UsersRoles {
     @JoinColumn({ name: 'userID' })
     user: Users | null;
 
-    @ManyToOne(type => Roles, roles => Roles.users_roless, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+    @ManyToOne(type => Roles, roles => roles.users_roless, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     @JoinColumn({ name: 'roleID' })
     role: Roles | null;
 

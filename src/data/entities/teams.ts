@@ -35,7 +35,7 @@ export class Teams {
     })
     teamMembers: number;
 
-    @OneToMany(type => UsersTeams, users_teams => UsersTeams.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
+    @OneToMany(type => UsersTeams, users_teams => users_teams.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
     users_teamss: UsersTeams[];
 
     @OneToMany(type => Votes, votes => votes.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
