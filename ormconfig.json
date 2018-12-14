@@ -1,11 +1,11 @@
 [{
-    "name": "feedbackdb",
+    "name": "feedback",
     "type": "mysql",
     "host": "localhost",
     "port": 3306,
     "username": "root",
     "password": "6969",
-    "database": "mysql",
+    "database": "feedbackdb",
     "synchronize": false,
     "logging": true,
     "logger": "file",

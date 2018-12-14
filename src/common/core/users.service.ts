@@ -3,18 +3,19 @@ import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Repository, TransactionManager, EntityManager, Transaction } from 'typeorm';
-import { User } from './../../data/entities/user.entity';
+// import { User } from './../../data/entities/user.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
 import { validate } from 'class-validator';
+import { Users } from 'src/data/entities/users.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    @InjectRepository(Users)
+    private readonly usersRepository: Repository<Users>,
 
     ) { }
 
@@ -40,7 +41,7 @@ export class UsersService {
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
-    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['email', 'isAdmin', 'password'], where: { email: user.email } });
+    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['email' /*'isAdmin'*/, 'password'], where: { email: user.email } });
 
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);

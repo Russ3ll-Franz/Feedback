@@ -9,6 +9,6 @@ export class UserRegisterDTO {
   @Matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}/)
   password: string;
 
-  @IsOptional()
-  avatarUrl: string;
+  // @IsOptional()
+  // avatarUrl: string;
 }

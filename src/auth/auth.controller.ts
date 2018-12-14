@@ -48,12 +48,12 @@ export class AuthController {
     file,
   ): Promise<string> {
 
-    const folder = join('.', 'public', 'uploads');
-    if (!file) {
-      user.avatarUrl = join(folder, 'default.png');
-    } else {
-      user.avatarUrl = join(folder, file.filename);
-    }
+    // const folder = join('.', 'public', 'uploads');
+    // if (!file) {
+    //   user.avatarUrl = join(folder, 'default.png');
+    // } else {
+    //   user.avatarUrl = join(folder, file.filename);
+    // }
 
     try {
       await this.usersService.registerUser(user);

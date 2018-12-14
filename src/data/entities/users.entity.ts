@@ -1,9 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { UsersRoles } from './users_roles';
-import { UsersTeams } from './users_teams';
-import { Votes } from './votes';
 
-@Entity('users')
+import { Feedbacklog } from './feedbacklog.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { UsersRoles } from './users_roles.entity';
+import { UsersTeams } from './users_teams.entity';
+
+@Entity({
+    name: 'users',
+})
 export class Users {
 
     @PrimaryGeneratedColumn({
@@ -47,13 +50,27 @@ export class Users {
     })
     email: string;
 
+    @Column('int', {
+        nullable: true,
+        name: 'receivedFeedbacks',
+    })
+    receivedFeedbacks: number;
+
+    @Column('int', {
+        nullable: true,
+        name: 'givenFeedbacks',
+    })
+    givenFeedbacks: number;
+
     @OneToMany(type => UsersRoles, users_roles => users_roles.user, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
     users_roless: UsersRoles[];
 
     @OneToMany(type => UsersTeams, users_teams => users_teams.user, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
     users_teamss: UsersTeams[];
 
-    @OneToMany(type => Votes, votes => votes.user, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-    votess: Votes[];
+    @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.receiver, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
+    feedbacklog: Feedbacklog[];
 
+    @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.sender, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
+    feedbacklog2: Feedbacklog[];
 }

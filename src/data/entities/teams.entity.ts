@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { UsersTeams } from './users_teams';
-import { Votes } from './votes';
-
-@Entity('teams')
+import { UsersTeams } from './users_teams.entity';
+@Entity({
+    name: 'teams'
+    ,
+})
 export class Teams {
 
     @PrimaryGeneratedColumn({
@@ -37,8 +38,4 @@ export class Teams {
 
     @OneToMany(type => UsersTeams, users_teams => users_teams.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
     users_teamss: UsersTeams[];
-
-    @OneToMany(type => Votes, votes => votes.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-    votess: Votes[];
-
 }

@@ -1,10 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Users } from './users';
-import { Teams } from './teams';
+import { Users } from './users.entity';
+import { Teams } from './teams.entity';
 
-@Entity('users_teams')
-// @Index("fk_teams",["team",])
-// @Index("fk_users",["user",])
+@Entity({
+    name: 'usersTeams',
+})
 export class UsersTeams {
 
     @PrimaryGeneratedColumn({
