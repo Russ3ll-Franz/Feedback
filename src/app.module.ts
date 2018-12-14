@@ -1,4 +1,4 @@
-import { FeedbacksModule } from './feedbacks/feedbacks.module';
+// import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ConfigService } from './config/config.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
@@ -27,7 +27,7 @@ import { CoreModule } from './common/core/core.module';
     }),
     UsersModule,
     CoreModule,
-    FeedbacksModule,
+    // FeedbacksModule,
   ],
   controllers: [],
   providers: [],
