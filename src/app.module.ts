@@ -1,4 +1,3 @@
-// import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ConfigService } from './config/config.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
@@ -6,7 +5,9 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { CoreModule } from './common/core/core.module';
-
+import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { FeedbacksController } from './feedbacks/feedbacks.controller';
+import { FeedbackService } from './feedbacks/feedbacks.service';
 @Module({
   imports: [
     ConfigModule,
@@ -27,9 +28,9 @@ import { CoreModule } from './common/core/core.module';
     }),
     UsersModule,
     CoreModule,
-    // FeedbacksModule,
+    FeedbacksModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [FeedbacksController],
+  providers: [FeedbackService],
 })
 export class AppModule { }
