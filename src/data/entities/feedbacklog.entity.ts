@@ -17,11 +17,9 @@ export class Feedbacklog {
         name: 'feedback',
     })
     feedback: string;
-    @ManyToOne(type => Users, users => users.feedbacklog, { nullable: false, onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-    @JoinColumn({ name: 'receiverID' })
+    @ManyToOne(type => Users, users => users.feedbacklog)
     receiver: Users | null;
 
-    @ManyToOne(type => Users, users => users.feedbacklog2, { nullable: false, onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-    @JoinColumn({ name: 'senderID' })
+    @ManyToOne(type => Users, users => users.feedbacklog2)
     sender: Users | null;
 }

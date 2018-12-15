@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { UsersTeams } from './users_teams.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Users } from './users.entity';
 @Entity({
     name: 'teams'
     ,
@@ -13,29 +13,34 @@ export class Teams {
 
     @Column('varchar', {
         nullable: false,
-        length: 150,
+        length: 40,
+
         name: 'projectName',
     })
     projectName: string;
 
     @Column('date', {
         nullable: false,
+
         name: 'startDate',
     })
     startDate: string;
 
     @Column('date', {
         nullable: false,
+
         name: 'endDate',
     })
     endDate: string;
 
     @Column('int', {
         nullable: false,
+
         name: 'teamMembers',
     })
     teamMembers: number;
 
-    @OneToMany(type => UsersTeams, users_teams => users_teams.team, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
-    users_teamss: UsersTeams[];
+    @ManyToMany(type => Users)
+    @JoinTable()
+    user: Users[];
 }
