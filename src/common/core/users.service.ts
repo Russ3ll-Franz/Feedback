@@ -3,7 +3,6 @@ import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Repository, TransactionManager, EntityManager, Transaction } from 'typeorm';
-// import { User } from './../../data/entities/user.entity';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
@@ -30,7 +29,6 @@ export class UsersService {
     user.firstName = user.firstName;
     user.lastName = user.lastName;
     user.username = user.username;
-    // console.log(user);
 
     await this.usersRepository.create(user);
 
@@ -46,7 +44,7 @@ export class UsersService {
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
-    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['email' /*'isAdmin'*/, 'password'], where: { email: user.email } });
+    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['email', 'password'], where: { email: user.email } });
 
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);
