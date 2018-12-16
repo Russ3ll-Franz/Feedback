@@ -10,6 +10,6 @@ export class AdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.isAdmin;
+    return user && user.role === 'Admin';
   }
 }
