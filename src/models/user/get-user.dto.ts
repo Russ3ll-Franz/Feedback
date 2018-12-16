@@ -6,5 +6,5 @@ export class GetUserDTO {
 
   password: string;
 
-  // isAdmin: boolean;
+  role: string;
 }
