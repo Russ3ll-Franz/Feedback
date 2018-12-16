@@ -16,4 +16,14 @@ export class FeedbackService {
         return error;
     }
   }
+
+  async findOne(projectID: number): Promise<Feedbacklog> {
+    try {
+        const Feedback = this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
+        console.log(Feedback)
+        return await this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
+    } catch (error) {
+        return error;
+    }
+  }
 }

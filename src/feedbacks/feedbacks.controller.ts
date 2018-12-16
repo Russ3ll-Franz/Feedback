@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpService, Inject } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpService, Inject, Query } from '@nestjs/common';
 import { FeedbackService } from './feedbacks.service';
 import { Feedbacklog } from 'src/data/entities/feedbacklog.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -10,7 +10,13 @@ export class FeedbacksController {
 
   @Get()
   @UseGuards(AuthGuard())
-  findAll(): Promise<Feedbacklog[]> {
-    return this.feedbackRepository.findAll();
+  findAll(@Query() QParams): Promise<Feedbacklog | Feedbacklog[]> {
+  if(QParams.feedbackid){
+    console.log(QParams.feedbackid)
+    return this.feedbackRepository.findOne(QParams.feedbackid);
   }
+  return this.feedbackRepository.findAll();
+
+  }
+
 }

@@ -29,47 +29,18 @@ export class AuthController {
   }
 
   @Post('register')
-  // @UseInterceptors(FileInterceptor('avatar', {
-  //   limits: FileService.fileLimit(1, 2 * 1024 * 1024),
-  //   storage: FileService.storage(['public', 'images']),
-  //   fileFilter: (req, file, cb) => FileService.fileFilter(req, file, cb),
-  // }))
   async register(
     @Body(new ValidationPipe({
       transform: true,
       whitelist: true,
     }))
     user: UserRegisterDTO,
-
-    // @UploadedFile()
-    // file,
-  ): Promise<any> {
-
-    // const folder = join('.', 'public', 'uploads');
-    // if (!file) {
-    //   user.avatarUrl = join(folder, 'default.png');
-    // } else {
-    //   user.avatarUrl = join(folder, file.filename);
-    // }
+    ): Promise<any> {
 
     try {
       await this.usersService.registerUser(user);
       return 'User added to database';
     } catch (error) {
-      // await new Promise((resolve, reject) => {
-      //   if (file) {
-      //     unlink(join('.', file.path), (err) => {
-
-      //       if (err) {
-      //         reject(error.message);
-      //       }
-      //       resolve();
-      //     });
-      //   }
-
-      //   resolve();
-      // });
-
       return (error.message);
     }
   }
