@@ -54,7 +54,7 @@ export class AuthController {
 
     try {
       await this.usersService.registerUser(user);
-      return 'saved';
+      return 'User added to database';
     } catch (error) {
       // await new Promise((resolve, reject) => {
       //   if (file) {

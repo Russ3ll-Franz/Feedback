@@ -8,6 +8,9 @@ import { CoreModule } from './common/core/core.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { FeedbacksController } from './feedbacks/feedbacks.controller';
 import { FeedbackService } from './feedbacks/feedbacks.service';
+import { ProjectsController } from './projects/projects.controller';
+import { ProjectsModule } from './projects/projects.module';
+import { ProjectsService } from './projects/projects.service';
 @Module({
   imports: [
     ConfigModule,
@@ -29,8 +32,9 @@ import { FeedbackService } from './feedbacks/feedbacks.service';
     UsersModule,
     CoreModule,
     FeedbacksModule,
+    ProjectsModule,
   ],
-  controllers: [FeedbacksController],
-  providers: [FeedbackService],
+  controllers: [FeedbacksController, ProjectsController],
+  providers: [FeedbackService, ProjectsService],
 })
 export class AppModule { }
