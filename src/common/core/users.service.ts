@@ -21,7 +21,32 @@ export class UsersService {
   async registerUser(user: UserRegisterDTO) {
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
     if (userFound) {
-      throw new BadRequestException('There is already such user registered!');
+      throw new BadRequestException('There is already such email registered!');
+    }
+
+    const userNameFound = await this.usersRepository.findOne({ where: { username: user.username } });
+    if (userNameFound) {
+      throw new BadRequestException('There is already such username registered!');
+    }
+
+    if (!user.password){
+      throw new BadRequestException('Password can not be null!');
+    }
+
+    if (!user.firstName){
+      throw new BadRequestException('First name cannot be null');
+    }
+
+    if (!user.lastName){
+      throw new BadRequestException('Last name cannot be null');
+    }
+
+    if (!user.email){
+      throw new BadRequestException('Email can not be null!');
+    }
+
+    if (!user.username){
+      throw new BadRequestException('Username can not be null!');
     }
 
     user.password = await bcrypt.hash(user.password, 10);
@@ -29,6 +54,7 @@ export class UsersService {
     user.firstName = user.firstName;
     user.lastName = user.lastName;
     user.username = user.username;
+    user.role = 'User';
 
     await this.usersRepository.create(user);
 
