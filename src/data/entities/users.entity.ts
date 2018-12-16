@@ -13,7 +13,7 @@ export class Users {
     userID: number;
 
     @Column('varchar', {
-        nullable: true,
+        nullable: false,
 
         length: 100,
         name: 'email',
@@ -21,7 +21,7 @@ export class Users {
     email: string;
 
     @Column('varchar', {
-        nullable: true,
+        nullable: false,
 
         length: 200,
         name: 'password',
@@ -29,7 +29,7 @@ export class Users {
     password: string;
 
     @Column('varchar', {
-        nullable: true,
+        nullable: false,
         length: 20,
 
         name: 'username',
@@ -37,7 +37,7 @@ export class Users {
     username: string;
 
     @Column('varchar', {
-        nullable: true,
+        nullable: false,
         length: 35,
 
         name: 'firstName',
