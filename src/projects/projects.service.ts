@@ -1,4 +1,3 @@
-import { AddProjectDTO } from './../models/user/projects.dto';
 import { Teams } from './../data/entities/teams.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,18 +9,30 @@ export class ProjectsService {
         @InjectRepository(Teams)
         private readonly projectRepository: Repository<Teams>) { }
 
-    async addProject(project: AddProjectDTO) {
+    async addProject(project) {
         const projectFound = await this.projectRepository.findOne({ where: { projectName: project.projectName } });
         if (projectFound) {
             throw new BadRequestException('There is already such project added!');
         }
 
+        if (!project.projectName) {
+            throw new BadRequestException('Project name cannot be null!');
+        }
+
+        if (!project.startDate) {
+            throw new BadRequestException('Project start date cannot be null!');
+        }
+
+        if (!project.endDate) {
+            throw new BadRequestException('Project end date cannot be null!');
+        }
+
+        if (!project.teamMembers) {
+            throw new BadRequestException('Team members cannot be null!');
+        }
+
         await this.projectRepository.create(project);
 
-        project.projectName = project.projectName;
-        project.startDate = project.startDate;
-        project.endDate = project.endDate;
-        project.teamMembers = +project.teamMembers;
         const result = await this.projectRepository.save([project]);
 
         return result;

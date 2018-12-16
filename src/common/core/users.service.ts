@@ -1,6 +1,5 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
-import { UserRegisterDTO } from '../../models/user/user-register.dto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Repository, TransactionManager, EntityManager, Transaction } from 'typeorm';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
@@ -18,7 +17,7 @@ export class UsersService {
 
   ) { }
 
-  async registerUser(user: UserRegisterDTO) {
+  async registerUser(user) {
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
     if (userFound) {
       throw new BadRequestException('There is already such email registered!');
@@ -30,7 +29,7 @@ export class UsersService {
     }
 
     if (!user.password){
-      throw new BadRequestException('Password can not be null!');
+      throw new BadRequestException('Password cannot be null!');
     }
 
     if (!user.firstName){
@@ -42,19 +41,14 @@ export class UsersService {
     }
 
     if (!user.email){
-      throw new BadRequestException('Email can not be null!');
+      throw new BadRequestException('Email cannot be null!');
     }
 
     if (!user.username){
-      throw new BadRequestException('Username can not be null!');
+      throw new BadRequestException('Username cannot be null!');
     }
 
     user.password = await bcrypt.hash(user.password, 10);
-    user.role = user.role;
-    user.firstName = user.firstName;
-    user.lastName = user.lastName;
-    user.username = user.username;
-    user.role = 'User';
 
     await this.usersRepository.create(user);
 

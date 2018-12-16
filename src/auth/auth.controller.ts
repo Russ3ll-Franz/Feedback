@@ -1,6 +1,5 @@
 import { UserLoginDTO } from '../models/user/user-login.dto';
 import { AdminGuard } from './../common';
-import { UserRegisterDTO } from '../models/user/user-register.dto';
 import { UsersService } from '../common/core/users.service';
 import { AuthService } from './auth.service';
 import { Get, Controller, UseGuards, Post, Body, FileInterceptor, UseInterceptors, UploadedFile, ValidationPipe, UsePipes } from '@nestjs/common';
@@ -34,7 +33,7 @@ export class AuthController {
       transform: true,
       whitelist: true,
     }))
-    user: UserRegisterDTO,
+    user: UserLoginDTO,
     ): Promise<any> {
 
     try {
