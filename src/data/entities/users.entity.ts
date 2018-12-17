@@ -1,7 +1,6 @@
 import { Teams } from './teams.entity';
 import { Feedbacklog } from './feedbacklog.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
-import { Roles } from './roles.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
 
 @Entity({
     name: 'users',
@@ -67,10 +66,16 @@ export class Users {
     })
     givenFeedbacks: number;
 
+    @Column('varchar', {
+        nullable: false,
+        length: 20,
+
+        name: 'role',
+    })
+    role: string;
+
     @ManyToMany(type => Teams, team => team.user)
     team: Teams[];
-    @ManyToMany(type => Roles, role => role.user)
-    role: Roles[];
     @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.receiver)
     feedbacklog: Feedbacklog[];
 
