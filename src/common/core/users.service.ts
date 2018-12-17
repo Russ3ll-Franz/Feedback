@@ -50,6 +50,8 @@ export class UsersService {
 
     user.password = await bcrypt.hash(user.password, 10);
 
+    user.role = 'User';
+
     await this.usersRepository.create(user);
 
     const result = await this.usersRepository.save([user]);
