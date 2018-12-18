@@ -1,16 +1,16 @@
 /*Inserting users*/
 
 INSERT INTO users (userID, email, password, username, firstName, lastName, role)
-VALUES (1, 'aaster@abv.bg', '789654123', 'aaster23', 'Georgi', 'Yordanov', 'Admin'),
-(2, 'martin.bechev@abv.bg', '789654123', 'm.bechev', 'Martin', 'Bechev', 'Admin'),
-(3, 'lacho.jokera@abv.bg', '456321789', 'lachoroba', 'Lachezar', 'Dimitrov', 'Team Lead'),
-(4, 'hristo@abv.bg', '456321789', 'iceek', 'Hristo', 'HRISTOV', 'Team Lead'),
-(5, 'pesho@abv.bg', '456321789', 'pesho123', 'Pesho', 'Peshev', 'User'),
-(6, 'ivan@abv.bg', '456321789', 'ivan123', 'Ivan', 'Ivanov', 'User'),
-(7, 'mariq@abv.bg', '456321789', 'mimeTooo', 'Maria', 'DIBI', 'User'),
-(8, 'anna@abv.bg', '456321789', 'gotinotoAnche', 'Pesho', 'Peshev', 'User'),
-(9, 'pesho@abv.bg', '456321789', 'pesho123', 'Pesho', 'Peshev', 'User'),
-(10, 'kiki@abv.bg', '456321789', 'KIIKITOWE', 'Kiki', 'TOWE', 'User');
+VALUES (1, 'aaster@abv.bg', '$2y$12$ZGFNU.9QF132O9P83gcZdeMVEdmpk6CozUL7s8CMTyMgvBIo45omm', 'aaster23', 'Georgi', 'Yordanov', 'Admin'),
+(2, 'martin.bechev@abv.bg', '$2y$12$ZGFNU.9QF132O9P83gcZdeMVEdmpk6CozUL7s8CMTyMgvBIo45omm', 'm.bechev', 'Martin', 'Bechev', 'Admin'),
+(3, 'lacho.jokera@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'lachoroba', 'Lachezar', 'Dimitrov', 'Team Lead'),
+(4, 'hristo@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'iceek', 'Hristo', 'HRISTOV', 'Team Lead'),
+(5, 'pesho@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'pesho123', 'Pesho', 'Peshev', 'User'),
+(6, 'ivan@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'ivan123', 'Ivan', 'Ivanov', 'User'),
+(7, 'mariq@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'mimeTooo', 'Maria', 'DIBI', 'User'),
+(8, 'anna@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'gotinotoAnche', 'Pesho', 'Peshev', 'User'),
+(9, 'pesho@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'pesho123', 'Pesho', 'Peshev', 'User'),
+(10, 'kiki@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'KIIKITOWE', 'Kiki', 'TOWE', 'User');
 
 /* Inserting teams */
 
