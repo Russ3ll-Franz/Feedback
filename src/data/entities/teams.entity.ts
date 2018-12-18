@@ -43,4 +43,8 @@ export class Teams {
     @ManyToMany(type => Users)
     @JoinTable()
     user: Users[];
+
+    @ManyToMany(type => Users)
+    @JoinTable()
+    teamLead: Users[];
 }

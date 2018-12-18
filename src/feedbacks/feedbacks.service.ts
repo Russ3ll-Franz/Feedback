@@ -20,7 +20,7 @@ export class FeedbackService {
   async findOne(projectID: number): Promise<Feedbacklog> {
     try {
         const Feedback = this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
-        console.log(Feedback)
+        console.log(Feedback);
         return await this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
     } catch (error) {
         return error;

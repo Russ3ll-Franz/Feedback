@@ -11,8 +11,8 @@ export class FeedbacksController {
   @Get()
   @UseGuards(AuthGuard())
   findAll(@Query() QParams): Promise<Feedbacklog | Feedbacklog[]> {
-  if(QParams.feedbackid){
-    console.log(QParams.feedbackid)
+  if (QParams.feedbackid){
+    console.log(QParams.feedbackid);
     return this.feedbackRepository.findOne(QParams.feedbackid);
   }
   return this.feedbackRepository.findAll();

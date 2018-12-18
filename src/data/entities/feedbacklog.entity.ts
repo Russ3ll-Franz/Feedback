@@ -1,8 +1,9 @@
+import { Teams } from './teams.entity';
 import { Users } from './users.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index, JoinTable, ManyToMany } from 'typeorm';
 
 @Entity({
-    name: 'feedbackLog',
+    name: 'feedbacklog',
 })
 export class Feedbacklog {
 
@@ -22,4 +23,8 @@ export class Feedbacklog {
 
     @ManyToOne(type => Users, users => users.feedbacklog2)
     sender: Users | null;
+
+    @ManyToMany(type => Teams)
+    @JoinTable()
+    Feedbacklog: Feedbacklog;
 }
