@@ -49,7 +49,21 @@ export class ProjectsService {
         try {
             return await this.projectRepository.findOneOrFail({ where: { teamID: id } });
         } catch (error) {
-            return new HttpException(`Team wih id:${id} was not found.`, 404);
+            return new HttpException(`Team with id:${id} was not found.`, 404);
+        }
+    }
+
+    async getMembers(id): Promise<any> {
+        const names = [];
+        try {
+            const team = await this.projectRepository.findOneOrFail({ where: { teamID: id } });
+            await team.user.forEach((user) => {
+                names.push(`${user.firstName} ${user.lastName} ${user.receivedFeedbacks} ${user.givenFeedbacks}`);
+            });
+
+            return names;
+        } catch (error) {
+            return new HttpException(`Team with id:${id} does not exist.`, 404);
         }
     }
 }

@@ -15,6 +15,14 @@ export class ProjectsController {
         return new BadRequestException('Invalid team id');
     }
 
+    @Get(':id/members')
+    async showMembers(@Param('id') id): Promise<any> {
+        if (+id) {
+            return this.projectService.getMembers(id);
+        }
+        return new BadRequestException('Invalid team id');
+    }
+
     @Get()
     getAllProjects(): Promise<Teams[]> {
         return this.projectService.findAll();

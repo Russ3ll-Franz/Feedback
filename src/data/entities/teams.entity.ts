@@ -40,7 +40,9 @@ export class Teams {
     })
     teamMembers: number;
 
-    @ManyToMany(type => Users)
+    @ManyToMany(type => Users, {
+        eager: true,
+    })
     @JoinTable()
     user: Users[];
 
