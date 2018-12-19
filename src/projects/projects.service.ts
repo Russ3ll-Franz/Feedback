@@ -1,5 +1,5 @@
 import { Teams } from './../data/entities/teams.entity';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -43,6 +43,13 @@ export class ProjectsService {
             return await this.projectRepository.find();
         } catch (error) {
             return error;
+        }
+    }
+    async getProject(id): Promise<any> {
+        try {
+            return await this.projectRepository.findOneOrFail({ where: { teamID: id } });
+        } catch (error) {
+            return new HttpException(`Team wih id:${id} was not found.`, 404);
         }
     }
 }
