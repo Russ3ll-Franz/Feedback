@@ -9,7 +9,7 @@ VALUES (1, 'aaster@abv.bg', '$2y$12$ZGFNU.9QF132O9P83gcZdeMVEdmpk6CozUL7s8CMTyMg
 (6, 'ivan@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'ivan123', 'Ivan', 'Ivanov', 'User'),
 (7, 'mariq@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'mimeTooo', 'Maria', 'DIBI', 'User'),
 (8, 'anna@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'gotinotoAnche', 'Pesho', 'Peshev', 'User'),
-(9, 'pesho@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'pesho123', 'Pesho', 'Peshev', 'User'),
+(9, 'peshoVtori@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'pesho12345', 'Pesho', 'Peshev', 'User'),
 (10, 'kiki@abv.bg', '$2b$10$C1KJcRXwmm2783fnhB9kCeEoa0Yndt8koJM0UE40GvIAWxyBBQI/C', 'KIIKITOWE', 'Kiki', 'TOWE', 'User');
 
 /* Inserting teams */

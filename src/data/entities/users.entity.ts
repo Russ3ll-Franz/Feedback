@@ -31,6 +31,7 @@ export class Users {
     @Column('varchar', {
         nullable: false,
         length: 20,
+        unique: true,
 
         name: 'username',
     })
