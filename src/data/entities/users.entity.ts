@@ -54,14 +54,16 @@ export class Users {
     lastName: string | null;
 
     @Column('int', {
-        nullable: true,
+        nullable: false,
+        default: 0,
 
         name: 'receivedFeedbacks',
     })
     receivedFeedbacks: number;
 
     @Column('int', {
-        nullable: true,
+        nullable: false,
+        default: 0,
 
         name: 'givenFeedbacks',
     })
