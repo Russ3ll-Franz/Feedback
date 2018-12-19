@@ -69,7 +69,8 @@ export class UsersService {
     // tslint:disable-next-line:max-line-length
     const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['username', 'password', 'role'], where: { username: user.username } });
     if (userFound) {
-      const result = user.password === userFound.password;
+      const result = await bcrypt.compare(user.password, userFound.password);
+      // const result = user.password === userFound.password;
       if (result) {
         return userFound;
       }
