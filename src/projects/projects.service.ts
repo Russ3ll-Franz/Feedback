@@ -47,7 +47,7 @@ export class ProjectsService {
 
             return names;
         } catch (error) {
-            return new HttpException(`Team with id:${id} does not exist.`, 404);
+            return new BadRequestException('Check project id', `Team with id:${id} does not exist.`);
         }
     }
 }

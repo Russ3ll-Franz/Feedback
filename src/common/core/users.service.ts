@@ -6,8 +6,8 @@ import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
-import { validate } from 'class-validator';
 import { Users } from 'src/data/entities/users.entity';
+import { UserRegisterDTO } from 'src/models/user/user-register.dto';
 
 @Injectable()
 export class UsersService {
@@ -18,45 +18,25 @@ export class UsersService {
   ) { }
 
   async registerUser(user) {
-    const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
-    if (userFound) {
-      throw new BadRequestException('There is already such email registered!');
+    try {
+      const userNameFound = await this.usersRepository.findOne({ where: { username: user.username } });
+      if (userNameFound) {
+        return new BadRequestException('There is already such username registered!');
+      }
+      const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
+      if (userFound) {
+        return new BadRequestException('There is already such email registered!');
+      }
+
+      user.role = 'User';
+      user.password = await bcrypt.hash(user.password, 10);
+
+      await this.usersRepository.create(user);
+      return await this.usersRepository.save([user]);
+
+    } catch (error) {
+      return new BadRequestException('Check input fields', 'Invalid user input field');
     }
-
-    const userNameFound = await this.usersRepository.findOne({ where: { username: user.username } });
-    if (userNameFound) {
-      throw new BadRequestException('There is already such username registered!');
-    }
-
-    if (!user.password){
-      throw new BadRequestException('Password cannot be null!');
-    }
-
-    if (!user.firstName){
-      throw new BadRequestException('First name cannot be null');
-    }
-
-    if (!user.lastName){
-      throw new BadRequestException('Last name cannot be null');
-    }
-
-    if (!user.email){
-      throw new BadRequestException('Email cannot be null!');
-    }
-
-    if (!user.username){
-      throw new BadRequestException('Username cannot be null!');
-    }
-
-    user.password = await bcrypt.hash(user.password, 10);
-
-    user.role = 'User';
-
-    await this.usersRepository.create(user);
-
-    const result = await this.usersRepository.save([user]);
-
-    return result;
   }
 
   async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
@@ -70,12 +50,10 @@ export class UsersService {
     const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['username', 'password', 'role'], where: { username: user.username } });
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);
-      // const result = user.password === userFound.password;
       if (result) {
         return userFound;
       }
     }
-
     throw new NotFoundException('Wrong credentials');
   }
 

@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 
 export class UserLoginDTO {
 
