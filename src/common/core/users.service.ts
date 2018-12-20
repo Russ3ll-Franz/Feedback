@@ -1,13 +1,12 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { Repository, TransactionManager, EntityManager, Transaction } from 'typeorm';
-import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
 import { Users } from 'src/data/entities/users.entity';
-import { UserRegisterDTO } from 'src/models/user/user-register.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,7 +56,15 @@ export class UsersService {
     throw new NotFoundException('Wrong credentials');
   }
 
-  async getAll() {
-    return this.usersRepository.find({});
+  async changeUserRole(user) {
+    const userFound = await this.usersRepository.findOne({ where: { username: user.username } });
+    if (!userFound) {
+      return new BadRequestException('There is no such user with this username');
+    }
+    if (userFound.role === user.role) {
+      return new BadRequestException('Cannot change user\'s role with same role');
+    }
+    await this.usersRepository.update({ username: user.username }, { role: user });
+    return 'User role changed';
   }
 }
