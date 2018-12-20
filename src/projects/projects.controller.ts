@@ -1,6 +1,6 @@
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
-import { Controller, Get, Post, ValidationPipe, Body, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 
 @Controller('projects')
@@ -29,17 +29,12 @@ export class ProjectsController {
     }
 
     @Post('new')
-    async addProject(
-        @Body(new ValidationPipe({
-            transform: true,
-            whitelist: true,
-        }))
-        project: AddProjectDTO): Promise<string> {
+    async addProject(@Body() project: AddProjectDTO): Promise<string> {
         try {
             await this.projectService.addProject(project);
             return 'Project added in database';
         } catch (error) {
-            return (error.message);
+            return 'Invalid input fields';
         }
     }
 }

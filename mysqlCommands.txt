@@ -1,4 +1,5 @@
 /*Inserting users*/
+/* PASSWORD IS: TainoObichamAzis => for every one */
 
 INSERT INTO users (userID, email, password, username, firstName, lastName, role)
 VALUES (1, 'aaster@abv.bg', '$2b$10$vsEYxz85aNLLi1v6QFwaN.U4Xf0ouqgpZQEmwHYSrGOUuJvzYs4ma', 'aaster23', 'Georgi', 'Yordanov', 'Admin'),
