@@ -8,11 +8,12 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
+  // Should be protected with Admin rights
   changeRole(@Query() user) {
-    if (!(+user.username)) {
+    if (!(+user.username) && !(+user.role)) {
       return this.usersService.changeUserRole(user);
     }
-    return new BadRequestException('Username cannot be number');
+    return new BadRequestException('Username or role cannot be number');
   }
 
   @Post('login')

@@ -7,6 +7,7 @@ import { ProjectsService } from './projects.service';
 export class ProjectsController {
     constructor(private readonly projectService: ProjectsService) { }
 
+    // Should be protected with properly rights
     @Get(':id')
     async getOne(@Param('id') id): Promise<any> {
         if (+id) {
@@ -16,6 +17,7 @@ export class ProjectsController {
     }
 
     @Get(':id/members')
+    // Should be protected with properly rights
     async showMembers(@Param('id') id): Promise<any> {
         if (+id) {
             return this.projectService.getMembers(id);
@@ -29,6 +31,7 @@ export class ProjectsController {
     }
 
     @Post('new')
+    // Should be protected with properly rights
     async addProject(@Body() project: AddProjectDTO): Promise<string> {
         try {
             await this.projectService.addProject(project);
