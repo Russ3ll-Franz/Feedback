@@ -67,4 +67,12 @@ export class UsersService {
     await this.usersRepository.update({ username: user.username }, { role: user });
     return 'Role changed';
   }
+
+  async getUser(user) {
+    try {
+      return this.usersRepository.findOneOrFail({ where: { username: user.username } });
+    } catch (error) {
+      throw new BadRequestException('User not found');
+    }
+  }
 }
