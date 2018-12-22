@@ -72,7 +72,7 @@ export class ProjectsService {
             }
         });
 
-        if (IsEmpty(member)) {
+        if (Object.keys(member).length === 0) {
             throw new BadRequestException('Check username', `User with username:${memberInfo.username} does not exist.`);
         }
 
