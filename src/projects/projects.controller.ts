@@ -1,11 +1,21 @@
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
-import { Controller, Get, Post, Body, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException, Query } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 
 @Controller('projects')
 export class ProjectsController {
     constructor(private readonly projectService: ProjectsService) { }
+
+    @Get()
+    // Should be protected with properly rights
+    // projects?id=1&username=m.bechev
+    async memberFeedbacklog(@Query() memberInfo): Promise<any> {
+        if ((+memberInfo.id) && !(+memberInfo.username)) {
+            return this.projectService.getMemberFeedbacklog(memberInfo);
+        }
+        throw new BadRequestException('Invalid project id or username');
+    }
 
     // Should be protected with properly rights
     @Get(':id')
@@ -13,7 +23,7 @@ export class ProjectsController {
         if (+id) {
             return this.projectService.getProject(id);
         }
-        return new BadRequestException('Invalid team id');
+        throw new BadRequestException('Invalid team id');
     }
 
     @Get(':id/members')
@@ -22,7 +32,7 @@ export class ProjectsController {
         if (+id) {
             return this.projectService.getMembers(id);
         }
-        return new BadRequestException('Invalid team id');
+        throw new BadRequestException('Invalid team id');
     }
 
     @Get()

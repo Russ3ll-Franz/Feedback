@@ -8,9 +8,9 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index, J
 export class Feedbacklog {
 
     @PrimaryGeneratedColumn({
-        name: 'feedbackLogID',
+        name: 'feedbacklogID',
     })
-    feedbackLogID: number;
+    feedbacklogID: number;
 
     @Column('varchar', {
         nullable: false,
@@ -18,10 +18,11 @@ export class Feedbacklog {
         name: 'feedback',
     })
     feedback: string;
-    @ManyToOne(type => Users, users => users.feedbacklog)
+
+    @ManyToOne(type => Users, users => users.received)
     receiver: Users | null;
 
-    @ManyToOne(type => Users, users => users.feedbacklog2)
+    @ManyToOne(type => Users, users => users.sent)
     sender: Users | null;
 
     @ManyToMany(type => Teams)
