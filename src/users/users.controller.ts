@@ -13,7 +13,7 @@ export class UsersController {
     if (!(+user.username) && !(+user.role)) {
       return this.usersService.changeUserRole(user);
     }
-    return new BadRequestException('Username or role cannot be number');
+    throw new BadRequestException('Username or role cannot be number');
   }
 
   @Post('login')

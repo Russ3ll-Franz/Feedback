@@ -20,21 +20,21 @@ export class UsersService {
     try {
       const userNameFound = await this.usersRepository.findOne({ where: { username: user.username } });
       if (userNameFound) {
-        return new BadRequestException('There is already such username registered!');
+        throw new BadRequestException('There is already such username registered!');
       }
       const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
       if (userFound) {
-        return new BadRequestException('There is already such email registered!');
+        throw new BadRequestException('There is already such email registered!');
       }
 
       user.role = 'User';
       user.password = await bcrypt.hash(user.password, 10);
 
       await this.usersRepository.create(user);
-      return await this.usersRepository.save([user]);
+      throw await this.usersRepository.save([user]);
 
     } catch (error) {
-      return new BadRequestException('Check input fields', 'Invalid user input field');
+      throw new BadRequestException('Check input fields', 'Invalid user input field');
     }
   }
 
@@ -59,12 +59,12 @@ export class UsersService {
   async changeUserRole(user) {
     const userFound = await this.usersRepository.findOne({ where: { username: user.username } });
     if (!userFound) {
-      return new BadRequestException('There is no such user with this username');
+      throw new BadRequestException('There is no such user with this username');
     }
     if (userFound.role === user.role) {
-      return new BadRequestException('Cannot change user\'s role with same role');
+      throw new BadRequestException('Cannot change user\'s role with same role');
     }
     await this.usersRepository.update({ username: user.username }, { role: user });
-    return 'User role changed';
+    return 'Role changed';
   }
 }
