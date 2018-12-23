@@ -1,17 +1,19 @@
-import { TeamLeadGuard } from './../common/guards/roles/teamLead.guard';
-import { AdminGuard } from './../common/guards/roles/admin.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Controller, Get, Post, Body, Param, BadRequestException, Query, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
+import { Roles } from 'src/common';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 
 @Controller('projects')
 export class ProjectsController {
     constructor(private readonly projectService: ProjectsService) { }
 
     @Get()
-    // Should be protected with properly rights
+
+    @Roles('Team Lead', 'Admin', 'User')
+    @UseGuards(AuthGuard(), RolesGuard)
     // projects?id=1&username=m.bechev
     async memberFeedbacklog(@Query() memberInfo): Promise<any> {
         if ((+memberInfo.id) && !(+memberInfo.username)) {
@@ -20,8 +22,16 @@ export class ProjectsController {
         throw new BadRequestException('Invalid project id or username');
     }
 
-    // Should be protected with properly rights
+    @Get()
+
+    getAllProjects(): Promise<Teams[]> {
+        return this.projectService.findAll();
+    }
+
     @Get(':id')
+
+    @Roles('Team Lead', 'Admin', 'User')
+    @UseGuards(AuthGuard(), RolesGuard)
     async getOne(@Param('id') id): Promise<any> {
         if (+id) {
             return this.projectService.getProject(id);
@@ -30,7 +40,9 @@ export class ProjectsController {
     }
 
     @Get(':id/members')
-    // Should be protected with properly rights
+
+    @Roles('Team Lead', 'Admin', 'User')
+    @UseGuards(AuthGuard(), RolesGuard)
     async showMembers(@Param('id') id): Promise<any> {
         if (+id) {
             return this.projectService.getMembers(id);
@@ -38,14 +50,10 @@ export class ProjectsController {
         throw new BadRequestException('Invalid team id');
     }
 
-    @Get()
-    getAllProjects(): Promise<Teams[]> {
-        return this.projectService.findAll();
-    }
-
     @Post('new')
-    @UseGuards(AuthGuard() )
-    // Should be protected with properly rights
+
+    @Roles('Team Lead', 'Admin')
+    @UseGuards(AuthGuard(), RolesGuard)
     async addProject(@Body() project: AddProjectDTO): Promise<string> {
         await this.projectService.addProject(project);
         return 'Project added in database';
