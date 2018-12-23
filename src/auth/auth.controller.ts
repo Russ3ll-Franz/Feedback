@@ -1,9 +1,10 @@
 import { UserLoginDTO } from '../models/user/user-login.dto';
-import { AdminGuard } from './../common';
 import { UsersService } from '../common/core/users.service';
 import { AuthService } from './auth.service';
-import { Get, Controller, UseGuards, Post, Body, FileInterceptor, UseInterceptors, UploadedFile, ValidationPipe, UsePipes } from '@nestjs/common';
+import { Get, Controller, UseGuards, Post, Body, ValidationPipe} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { Roles } from 'src/common';
 
 @Controller('auth')
 export class AuthController {
@@ -13,12 +14,15 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) { }
 
+  // For testing purpose
   @Get()
-  @UseGuards(AuthGuard(), AdminGuard)
+  @Roles('Team Lead', 'Admin')
+  @UseGuards(AuthGuard(), RolesGuard)
   root(): string {
     return 'root';
   }
 
+  // Public route
   @Get('login')
   async sign(@Body(new ValidationPipe({
     transform: true,
@@ -27,6 +31,7 @@ export class AuthController {
     return await this.authService.signIn(user);
   }
 
+  // Public route
   @Post('register')
   async register(
     @Body(new ValidationPipe({
@@ -34,7 +39,7 @@ export class AuthController {
       whitelist: true,
     }))
     user: UserLoginDTO,
-    ): Promise<any> {
+  ): Promise<any> {
 
     try {
       await this.usersService.registerUser(user);

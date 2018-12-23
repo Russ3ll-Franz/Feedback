@@ -1,6 +1,9 @@
+import { TeamLeadGuard } from './../common/guards/roles/teamLead.guard';
+import { AdminGuard } from './../common/guards/roles/admin.guard';
+import { AuthGuard } from '@nestjs/passport';
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
-import { Controller, Get, Post, Body, Param, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException, Query, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 
 @Controller('projects')
@@ -41,13 +44,10 @@ export class ProjectsController {
     }
 
     @Post('new')
+    @UseGuards(AuthGuard() )
     // Should be protected with properly rights
     async addProject(@Body() project: AddProjectDTO): Promise<string> {
-        try {
-            await this.projectService.addProject(project);
-            return 'Project added in database';
-        } catch (error) {
-            return 'Invalid input fields';
-        }
+        await this.projectService.addProject(project);
+        return 'Project added in database';
     }
 }
