@@ -1,29 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FeedbackDTO } from './../models/user/feedback.dto';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import { Feedbacklog } from 'src/data/entities/feedbacklog.entity';
+import { Users } from 'src/data/entities/users.entity';
 
 @Injectable()
 export class FeedbackService {
   constructor(
-    @InjectRepository(Feedbacklog)
-    private readonly feedbackRepository: Repository<Feedbacklog>) {}
+    @InjectEntityManager()
+    private entityManager: EntityManager,
+  ) { }
 
   async findAll(): Promise<Feedbacklog[]> {
     try {
-        return await this.feedbackRepository.find();
+      return await this.entityManager.find(Feedbacklog, {});
     } catch (error) {
-        return error;
+      return error;
     }
   }
 
-  async findOne(projectID: number): Promise<Feedbacklog> {
+  async addNew(body: FeedbackDTO) {
     try {
-        const Feedback = this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
-        console.log(Feedback);
-        return await this.feedbackRepository.findOne({ where: { feedbackLogID: projectID} });
+      const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
+      const senderID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.sender } });
+
+      await this.entityManager.update(Users, receiverID, { receivedFeedbacks: +1 });
+      await this.entityManager.update(Users, senderID, { givenFeedbacks: +1 });
+
+      const newFeedback = await this.entityManager.create(Feedbacklog);
+      newFeedback.feedback = body.feedback;
+      newFeedback.receiver = receiverID;
+      newFeedback.sender = senderID;
+      await this.entityManager.save(newFeedback);
+
     } catch (error) {
-        return error;
+      throw new BadRequestException('Invalid username');
     }
+
   }
+
+  // async findOne(projectID: number): Promise<Feedbacklog> {
+  //   try {
+  //     const Feedback = this.feedbackRepository.findOne({ where: { feedbackLogID: projectID } });
+  //     return await this.feedbackRepository.findOne({ where: { feedbackLogID: projectID } });
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 }

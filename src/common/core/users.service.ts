@@ -39,8 +39,7 @@ export class UsersService {
   }
 
   async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
-    const userFound: GetUserDTO = await this.usersRepository.findOne({ where: { email: payload.email } });
-
+    const userFound: GetUserDTO = await this.usersRepository.findOne({ where: { username: payload.username } });
     return userFound;
   }
 
