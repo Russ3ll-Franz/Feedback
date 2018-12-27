@@ -20,17 +20,28 @@ export class FeedbackService {
     }
   }
 
-  async addNew(body: FeedbackDTO) {
+  async addNew(body: FeedbackDTO, sender: string) {
     try {
-      const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
-      const senderID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.sender } });
+      let receiverID: Users;
+      let senderID: Users;
+
+      await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } }).then((res) => {
+        receiverID = res;
+      });
+      await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: sender } }).then((res) => {
+        senderID = res;
+      });
+
+      if (receiverID.userID === senderID.userID){
+        throw new BadRequestException(`You can not give feedback to yourself!`);
+      }
 
       // tslint:disable-next-line:max-line-length
       const receivedFeedbacksCount = await this.entityManager
         .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.receiver } });
 
       const givenFeedbacksCount = await this.entityManager
-        .findOne(Users, { select: ['givenFeedbacks'], where: { username: body.sender } });
+        .findOne(Users, { select: ['givenFeedbacks'], where: { username: sender } });
 
       await this.entityManager.update(Users, receiverID, { receivedFeedbacks:  Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
       await this.entityManager.update(Users, senderID, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
@@ -40,8 +51,11 @@ export class FeedbackService {
       newFeedback.receiver = receiverID;
       newFeedback.sender = senderID;
       await this.entityManager.save(newFeedback);
+
+      // tslint:disable-next-line:max-line-length
+      return `Successfully created feedback!`;
     } catch (error) {
-      throw new BadRequestException('Invalid username');
+      throw new BadRequestException(error.message);
     }
 
   }

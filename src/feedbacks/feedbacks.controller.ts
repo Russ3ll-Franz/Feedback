@@ -1,8 +1,10 @@
 import { FeedbackDTO } from './../models/user/feedback.dto';
-import { Controller, Get, UseGuards, HttpService, Inject, Query, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpService, Inject, Query, Post, Body, BadRequestException, Headers } from '@nestjs/common';
 import { FeedbackService } from './feedbacks.service';
 import { Feedbacklog } from 'src/data/entities/feedbacklog.entity';
 import { AuthGuard } from '@nestjs/passport';
+import * as jwt_decode from 'jwt-decode';
+import { TokenDTO } from 'src/models/token-from-header-dto';
 
 @Controller('feedbacks')
 export class FeedbacksController {
@@ -19,13 +21,10 @@ export class FeedbacksController {
     return this.feedbackRepository.findAll();
   }
 
+  @UseGuards(AuthGuard())
   @Post('/new')
-  addFeedback(@Body() body: FeedbackDTO) {
-    if (body.receiver !== body.sender) {
-      this.feedbackRepository.addNew(body);
-      return 'feedback saved';
-    } else {
-      throw new BadRequestException('Username is dublicate.');
-    }
+  async addFeedback(@Body() body: FeedbackDTO, @Headers() header: any) {
+    const sender: TokenDTO = jwt_decode(header.authorization);
+    return await this.feedbackRepository.addNew(body, sender.username);
   }
 }
