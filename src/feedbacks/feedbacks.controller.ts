@@ -22,7 +22,8 @@ export class FeedbacksController {
   @Post('/new')
   addFeedback(@Body() body: FeedbackDTO) {
     if (body.receiver !== body.sender) {
-      return this.feedbackRepository.addNew(body);
+      this.feedbackRepository.addNew(body);
+      return 'feedback saved';
     } else {
       throw new BadRequestException('Username is dublicate.');
     }

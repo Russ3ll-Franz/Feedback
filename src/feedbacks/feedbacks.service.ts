@@ -25,15 +25,21 @@ export class FeedbackService {
       const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
       const senderID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.sender } });
 
-      await this.entityManager.update(Users, receiverID, { receivedFeedbacks: +1 });
-      await this.entityManager.update(Users, senderID, { givenFeedbacks: +1 });
+      // tslint:disable-next-line:max-line-length
+      const receivedFeedbacksCount = await this.entityManager
+        .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.receiver } });
+
+      const givenFeedbacksCount = await this.entityManager
+        .findOne(Users, { select: ['givenFeedbacks'], where: { username: body.sender } });
+
+      await this.entityManager.update(Users, receiverID, { receivedFeedbacks:  Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
+      await this.entityManager.update(Users, senderID, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
 
       const newFeedback = await this.entityManager.create(Feedbacklog);
       newFeedback.feedback = body.feedback;
       newFeedback.receiver = receiverID;
       newFeedback.sender = senderID;
       await this.entityManager.save(newFeedback);
-
     } catch (error) {
       throw new BadRequestException('Invalid username');
     }
