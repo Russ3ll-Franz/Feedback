@@ -32,18 +32,17 @@ export class FeedbackService {
         senderID = res;
       });
 
-      if (receiverID.userID === senderID.userID){
+      if (receiverID.userID === senderID.userID) {
         throw new BadRequestException(`You can not give feedback to yourself!`);
       }
 
-      // tslint:disable-next-line:max-line-length
       const receivedFeedbacksCount = await this.entityManager
         .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.receiver } });
 
       const givenFeedbacksCount = await this.entityManager
         .findOne(Users, { select: ['givenFeedbacks'], where: { username: sender } });
 
-      await this.entityManager.update(Users, receiverID, { receivedFeedbacks:  Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
+      await this.entityManager.update(Users, receiverID, { receivedFeedbacks: Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
       await this.entityManager.update(Users, senderID, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
 
       const newFeedback = await this.entityManager.create(Feedbacklog);
@@ -52,7 +51,6 @@ export class FeedbackService {
       newFeedback.sender = senderID;
       await this.entityManager.save(newFeedback);
 
-      // tslint:disable-next-line:max-line-length
       return `Successfully created feedback!`;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -60,12 +58,12 @@ export class FeedbackService {
 
   }
 
-  // async findOne(projectID: number): Promise<Feedbacklog> {
-  //   try {
-  //     const Feedback = this.feedbackRepository.findOne({ where: { feedbackLogID: projectID } });
-  //     return await this.feedbackRepository.findOne({ where: { feedbackLogID: projectID } });
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
+  async findOne(projectID: number): Promise<Feedbacklog> {
+    try {
+      const Feedback = this.entityManager.findOne(Feedbacklog, { where: { feedbackLogID: projectID } });
+      return await this.entityManager.findOne(Feedbacklog, { where: { feedbackLogID: projectID } });
+    } catch (error) {
+      return error;
+    }
+  }
 }
