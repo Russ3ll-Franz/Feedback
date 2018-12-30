@@ -3,8 +3,8 @@ import { UsersService } from '../common/core/users.service';
 import { AuthService } from './auth.service';
 import { Get, Controller, UseGuards, Post, Body, ValidationPipe} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/common/guards/roles/roles.guard';
-import { Roles } from 'src/common';
+import { RolesGuard } from '../common/guards/roles/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController {

@@ -1,45 +1,43 @@
-import { JwtServiceMock } from './mocks/jwt.service.mock';
+import { AuthController } from './../auth/auth.controller';
+import { AuthService } from './../auth/auth.service';
+import { UsersService } from './../common/core/users.service';
 import { UserLoginDTO } from '../models/user/user-login.dto';
-import { JwtService, JwtModule } from '@nestjs/jwt';
-import { AuthController } from '../auth/auth.controller';
-import { UsersService } from '../common/core/users.service';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../auth/auth.service';
-import { PassportModule } from '@nestjs/passport';
-import { Repository } from 'typeorm';
+
+jest.mock('./../auth/auth.service'); // mock AuthService
+jest.mock('./../common/core/users.service'); // mock UserService
 
 describe('AuthController', () => {
-  let authService: AuthService;
-  let authCtrl: AuthController;
-  let jwtServiceMock: JwtServiceMock;
+  it('should call AuthService signIn method', async () => {
+    // Arrange
+    const userServ = new UsersService(null);
+    const authServ = new AuthService(userServ, null);
+    const ctrl = new AuthController(authServ, userServ);
+    const user = new UserLoginDTO();
+    jest.spyOn(authServ, 'signIn').mockImplementation(() => {
+      return 'token';
+    });
 
-  beforeAll(async () => {
-    jwtServiceMock = new JwtServiceMock({});
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
+    // Act
+    await ctrl.sign(user);
 
-      imports: [PassportModule.register({
-        defaultStrategy: 'jwt',
-      })],
-      providers: [AuthService, UsersService, {
-        provide: JwtService,
-        useValue: jwtServiceMock,
-      },
-        {
-          provide: 'UserRepository',
-          useClass: Repository,
-        },
-      ],
-    }).compile();
-
-    authCtrl = module.get<AuthController>(AuthController);
-    authService = module.get<AuthService>(AuthService);
+    // Assert
+    expect(authServ.signIn).toHaveBeenCalledTimes(1);
   });
 
-  it('should call AuthService signIn method', async () => {
+  it('should call UsersService register method', async () => {
+    // Arrange
+    const userServ = new UsersService(null);
+    const authServ = new AuthService(userServ, null);
+    const ctrl = new AuthController(authServ, userServ);
     const user = new UserLoginDTO();
-    jest.spyOn(authService, 'signIn');
-    await authCtrl.sign(user);
-    expect(authService.signIn).toHaveBeenCalledTimes(1);
+    jest.spyOn(authServ, 'signIn').mockImplementation(() => {
+      return 'token';
+    });
+
+    // Act
+    await ctrl.register(user);
+
+    // Assert
+    expect(userServ.registerUser).toHaveBeenCalledTimes(1);
   });
 });
