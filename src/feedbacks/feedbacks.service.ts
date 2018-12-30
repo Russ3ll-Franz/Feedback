@@ -2,8 +2,8 @@ import { FeedbackDTO } from './../models/user/feedback.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { Feedbacklog } from 'src/data/entities/feedbacklog.entity';
-import { Users } from 'src/data/entities/users.entity';
+import { Feedbacklog } from '../data/entities/feedbacklog.entity';
+import { Users } from '../data/entities/users.entity';
 
 @Injectable()
 export class FeedbackService {
