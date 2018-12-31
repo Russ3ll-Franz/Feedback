@@ -3,8 +3,8 @@ import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Controller, Get, Post, Body, Param, BadRequestException, Query, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
-import { Roles } from 'src/common';
-import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { Roles } from '../common';
+import { RolesGuard } from '../common/guards/roles/roles.guard';
 
 @Controller('projects')
 export class ProjectsController {
@@ -27,7 +27,6 @@ export class ProjectsController {
         throw new BadRequestException('Invalid project id or username');
     }
 
-
     @Get(':id')
 
     @Roles('Team Lead', 'Admin', 'User')
@@ -43,7 +42,7 @@ export class ProjectsController {
 
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
-    async showMembers(@Param('id') id): Promise<any> {
+    async showMembers(@Param('id') id: string): Promise<any> {
         if (+id) {
             return this.projectService.getMembers(id);
         }

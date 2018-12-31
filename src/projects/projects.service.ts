@@ -3,7 +3,6 @@ import { Teams } from './../data/entities/teams.entity';
 import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IsEmpty } from 'class-validator';
 
 @Injectable()
 export class ProjectsService {
