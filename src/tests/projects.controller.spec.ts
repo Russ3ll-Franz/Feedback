@@ -66,4 +66,18 @@ describe('Projects Controller', () => {
         // Assert
         expect(projectCtrl.addProject).toBeCalledTimes(1);
     });
+
+    it('should call addProject method', async () => {
+        // Arrange
+        jest.spyOn(projectCtrl, 'getAllProjects').mockImplementation(() => {
+            return 'test';
+        });
+        const project: AddProjectDTO = new AddProjectDTO();
+
+        // // Act
+        await projectCtrl.getAllProjects();
+
+        // Assert
+        expect(projectCtrl.getAllProjects).toBeCalledTimes(1);
+    });
 });
