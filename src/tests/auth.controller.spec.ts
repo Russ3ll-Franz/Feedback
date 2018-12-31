@@ -1,6 +1,6 @@
-import { AuthController } from './../auth/auth.controller';
-import { AuthService } from './../auth/auth.service';
-import { UsersService } from './../common/core/users.service';
+import { AuthController } from '../auth/auth.controller';
+import { AuthService } from '../auth/auth.service';
+import { UsersService } from '../common/core/users.service';
 import { UserLoginDTO } from '../models/user/user-login.dto';
 
 jest.mock('./../auth/auth.service'); // mock AuthService

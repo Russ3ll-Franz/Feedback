@@ -1,11 +1,11 @@
-import { FeedbackDTO } from './../models/user/feedback.dto';
+import { FeedbackDTO } from '../models/user/feedback.dto';
 import { FeedbacksController } from '../feedbacks/feedbacks.controller';
 import { FeedbackService } from '../feedbacks/feedbacks.service';
 
 jest.mock('./../feedbacks/feedbacks.service');
 jest.mock('../feedbacks/feedbacks.controller');
 
-describe('Feedbacks Controller', () => {
+describe('Feedbacks Service', () => {
     let feedbackServ: FeedbackService;
     let feedbackCtrl: FeedbacksController;
 
@@ -14,9 +14,9 @@ describe('Feedbacks Controller', () => {
         feedbackCtrl = new FeedbacksController(feedbackServ);
     });
 
-    it('should call findFeedbacks method', async () => {
+    it('should call findAll method', async () => {
         // Arrange
-        jest.spyOn(feedbackCtrl, 'findFeedbacks').mockImplementation(() => {
+        jest.spyOn(feedbackServ, 'findAll').mockImplementation(() => {
             return 'test';
         });
 
@@ -24,12 +24,12 @@ describe('Feedbacks Controller', () => {
         await feedbackCtrl.findFeedbacks(null);
 
         // Assert
-        expect(feedbackCtrl.findFeedbacks).toBeCalledTimes(1);
+        expect(feedbackServ.findAll()).toBe('test');
     });
 
-    it('should call addFeedback method', async () => {
+    it('should call addNew method', async () => {
         // Arrange
-        jest.spyOn(feedbackCtrl, 'addFeedback').mockImplementation(() => {
+        jest.spyOn(feedbackServ, 'addNew').mockImplementation(() => {
             return 'test';
         });
         const feedback: FeedbackDTO = new FeedbackDTO();
@@ -38,6 +38,20 @@ describe('Feedbacks Controller', () => {
         await feedbackCtrl.addFeedback(feedback, null);
 
         // Assert
-        expect(feedbackCtrl.addFeedback).toBeCalledTimes(1);
+        expect(feedbackServ.addNew(feedback, '')).toBe('test');
+    });
+
+    it('should call findOne method', async () => {
+        // Arrange
+        jest.spyOn(feedbackServ, 'findOne').mockImplementation(() => {
+            return 'test value';
+        });
+
+        // Act
+        await feedbackCtrl.findFeedbacks('');
+
+        // Assert
+        expect(feedbackServ.findOne(1)).toBe('test value');
+
     });
 });
