@@ -80,7 +80,7 @@ export class Users {
 
     @ManyToMany(type => Teams, team => team.user)
     team: Teams[];
-    
+
     @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.receiver, { eager: true })
     received: Feedbacklog[];
 

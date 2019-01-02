@@ -22,24 +22,30 @@ export class FeedbackService {
     }
   }
 
-  async addNew(body: FeedbackDTO, sender: any) {
+  async addNew(body: FeedbackDTO, sender: Users) {
     try {
       const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
       const senderID = sender.userID;
       let usersTeams;
 
       await this.entityManager.query(
-        `SELECT * from teams_user_users
+        `SELECT COUNT(usersUserID) from teams_user_users
         WHERE usersUserID IN(${senderID}, ${receiverID.userID})
         AND teamsTeamID = ${body.teamID}`,
       ).then((response) => {
         usersTeams = response;
       });
 
-      await this.entityManager.query(
-        
-      );
-
+      // let isAlreadyGivenFeedback: any;
+      // await this.entityManager
+      // .find(Feedbacklog,
+      //   { select: ['feedback', 'senderUserID'], where: { senderUserID: senderID },
+      // }).then((result) => {
+      //   //  if (result.sender === senderID && result.receiver === receiverID.userID && result.teamID === body.teamID) {
+      //   //   console.log('ebi si maikata shiban komp')
+      //   //  }
+      //   console.log(result);
+      // });
 
       if (usersTeams.length !== 2) {
         throw new Error('You and the person you want to vote for are not in the team you have specified!');
