@@ -1,9 +1,8 @@
 import { FeedbackDTO } from './../models/user/feedback.dto';
-import { Controller, Get, UseGuards, HttpService, Inject, Query, Post, Body, BadRequestException, Headers } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpService, Inject, Request , Query, Post, Body, BadRequestException, Headers } from '@nestjs/common';
 import { FeedbackService } from './feedbacks.service';
 import { Feedbacklog } from 'src/data/entities/feedbacklog.entity';
 import { AuthGuard } from '@nestjs/passport';
-import * as jwt_decode from 'jwt-decode';
 import { TokenDTO } from 'src/models/token-from-header-dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
@@ -29,8 +28,7 @@ export class FeedbacksController {
 
   @Roles('Team Lead', 'Admin', 'User')
   @UseGuards(AuthGuard(), RolesGuard)
-  async addFeedback(@Body() body: FeedbackDTO, @Headers() header: any) {
-    const sender: TokenDTO = jwt_decode(header.authorization);
-    return await this.feedbackService.addNew(body, sender.username);
+  async addFeedback(@Body() body: FeedbackDTO, @Request() req) {
+    return await this.feedbackService.addNew(body, req.user);
   }
 }

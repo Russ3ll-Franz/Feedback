@@ -1,9 +1,11 @@
+import { Teams } from 'src/data/entities/teams.entity';
 import { FeedbackDTO } from './../models/user/feedback.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, JoinTable, getConnection, getManager, createQueryBuilder, getRepository } from 'typeorm';
 import { Feedbacklog } from '../data/entities/feedbacklog.entity';
 import { Users } from '../data/entities/users.entity';
+import { from } from 'rxjs';
 
 @Injectable()
 export class FeedbackService {
@@ -20,19 +22,30 @@ export class FeedbackService {
     }
   }
 
-  async addNew(body: FeedbackDTO, sender: string) {
+  async addNew(body: FeedbackDTO, sender: any) {
     try {
-      let receiverID: Users;
-      let senderID: Users;
+      const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
+      const senderID = sender.userID;
+      let usersTeams;
 
-      await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } }).then((res) => {
-        receiverID = res;
-      });
-      await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: sender } }).then((res) => {
-        senderID = res;
+      await this.entityManager.query(
+        `SELECT * from teams_user_users
+        WHERE usersUserID IN(${senderID}, ${receiverID.userID})
+        AND teamsTeamID = ${body.teamID}`,
+      ).then((response) => {
+        usersTeams = response;
       });
 
-      if (receiverID.userID === senderID.userID) {
+      await this.entityManager.query(
+        
+      );
+
+
+      if (usersTeams.length !== 2) {
+        throw new Error('You and the person you want to vote for are not in the team you have specified!');
+      }
+
+      if (receiverID.userID === senderID) {
         throw new BadRequestException(`You can not give feedback to yourself!`);
       }
 
@@ -40,22 +53,21 @@ export class FeedbackService {
         .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.receiver } });
 
       const givenFeedbacksCount = await this.entityManager
-        .findOne(Users, { select: ['givenFeedbacks'], where: { username: sender } });
+        .findOne(Users, { select: ['givenFeedbacks'], where: { username: sender.username } });
 
       await this.entityManager.update(Users, receiverID, { receivedFeedbacks: Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
-      await this.entityManager.update(Users, senderID, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
+      await this.entityManager.update(Users, sender, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
 
       const newFeedback = await this.entityManager.create(Feedbacklog);
       newFeedback.feedback = body.feedback;
       newFeedback.receiver = receiverID;
-      newFeedback.sender = senderID;
+      newFeedback.sender = sender;
       await this.entityManager.save(newFeedback);
 
       return `Successfully created feedback!`;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-
   }
 
   async findOne(projectID: number): Promise<Feedbacklog> {
