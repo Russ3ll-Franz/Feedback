@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { TokenDTO } from 'src/models/token-from-header-dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
+import { Users } from 'src/data/entities/users.entity';
 
 @Controller('feedbacks')
 export class FeedbacksController {
@@ -16,24 +17,41 @@ export class FeedbacksController {
 
   @Roles('Team Lead', 'Admin', 'User')
   @UseGuards(AuthGuard(), RolesGuard)
-  findFeedbacks(@Query() QParams) {
+  async findFeedbacks(@Query() QParams, @Request() req) {
     if (QParams.id) {
-      return this.feedbackService.findOne(QParams.id).then((res) => {
-        return res;
-      }).catch((err) => {
-        throw new Error('No team with such an ID');
-      });
-    }
-    if (QParams.all){
-      return this.feedbackService.findAll();
-    }
-    if (QParams.projectName){
-      return this.feedbackService.findOne(QParams.projectName);
+      const feedback = await this.feedbackService.findOne(+QParams.id);
+      const sender = await feedback.sender;
+      const reciever = await feedback.receiver;
+      if (sender.userID === req.user.userID || req.user.userID === reciever.userID){
+        return {
+          Sender: sender.email,
+          Reciever: reciever.email,
+          Feedback: feedback.feedback,
+        };
+      }
+      return `You can not view this feedback because it's not sent to you or you aren't the sender!`;
     }
     else{
-      return 'Sorry we were unable to find any teams with the parameters you gave us, if you want you can use ?all to find all teams!';
+      return 'Sorry we were unable to find any feedbacks with the parameters you gave us, if you want you can use ?all to find all teams!';
     }
 
+  }
+
+  @Get('/all')
+
+  @Roles('Team Lead', 'Admin')
+  @UseGuards(AuthGuard(), RolesGuard)
+  async findAllFeedbacks(){
+    const feedbacks: Feedbacklog[] = await this.feedbackService.findAll();
+    return await Promise.all(feedbacks.map(async (feedback) => {
+      const sender = await feedback.sender;
+      const reciever = await feedback.receiver;
+      return { id: feedback.feedbacklogID,
+        Feedback: feedback.feedback,
+        Sender: sender.email,
+        Reciever: reciever.email,
+      }
+    }));
   }
 
   @Post('/new')

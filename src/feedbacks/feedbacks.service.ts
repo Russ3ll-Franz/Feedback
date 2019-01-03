@@ -76,7 +76,7 @@ export class FeedbackService {
 
   async findOne(projectID: number): Promise<Feedbacklog> {
     try {
-      return await this.entityManager.findOne(Feedbacklog, { where: { feedbackLogID: projectID } });
+      return await this.entityManager.findOne(Feedbacklog, { where: { feedbacklogID: projectID } });
     } catch (error) {
       return error;
     }
