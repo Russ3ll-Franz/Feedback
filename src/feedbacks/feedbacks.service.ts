@@ -1,11 +1,9 @@
-import { Teams } from 'src/data/entities/teams.entity';
 import { FeedbackDTO } from './../models/user/feedback.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, JoinTable, getConnection, getManager, createQueryBuilder, getRepository } from 'typeorm';
+import { EntityManager} from 'typeorm';
 import { Feedbacklog } from '../data/entities/feedbacklog.entity';
 import { Users } from '../data/entities/users.entity';
-import { from } from 'rxjs';
 
 @Injectable()
 export class FeedbackService {
@@ -42,7 +40,7 @@ export class FeedbackService {
       })
       .then((result) => {
         if (result.length !== 0){
-          throw new Error('You have already given this person a feedback!')
+          throw new Error('You have already given this person a feedback!');
         }
       });
 

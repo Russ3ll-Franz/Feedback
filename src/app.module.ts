@@ -1,3 +1,4 @@
+import { AdminPanelService } from './admin-panel/admin-panel.service';
 import { ConfigService } from './config/config.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
@@ -11,6 +12,8 @@ import { FeedbackService } from './feedbacks/feedbacks.service';
 import { ProjectsController } from './projects/projects.controller';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectsService } from './projects/projects.service';
+import { AdminPanelController } from './admin-panel/admin-panel.controller';
+import { AdminPanelModule } from './admin-panel/admin-panel.module';
 @Module({
   imports: [
     ConfigModule,
@@ -33,8 +36,9 @@ import { ProjectsService } from './projects/projects.service';
     CoreModule,
     FeedbacksModule,
     ProjectsModule,
+    AdminPanelModule,
   ],
-  controllers: [FeedbacksController, ProjectsController],
-  providers: [FeedbackService, ProjectsService],
+  controllers: [FeedbacksController, ProjectsController, AdminPanelController],
+  providers: [FeedbackService, ProjectsService, AdminPanelService],
 })
 export class AppModule { }

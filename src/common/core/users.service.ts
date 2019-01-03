@@ -55,18 +55,6 @@ export class UsersService {
     throw new NotFoundException('Wrong credentials');
   }
 
-  async changeUserRole(user) {
-    const userFound = await this.usersRepository.findOne({ where: { username: user.username } });
-    if (!userFound) {
-      throw new BadRequestException('There is no such user with this username');
-    }
-    if (userFound.role === user.role) {
-      throw new BadRequestException('Cannot change user\'s role with same role');
-    }
-    await this.usersRepository.update({ username: user.username }, { role: user });
-    return 'Role changed';
-  }
-
   async getUser(user) {
     try {
       return this.usersRepository.findOneOrFail({ where: { username: user.username } });
