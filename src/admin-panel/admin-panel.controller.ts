@@ -1,9 +1,10 @@
-import { GetUserDTO } from './../models/user/get-user.dto';
+
 import { AdminPanelService } from './admin-panel.service';
-import { Controller, Post, UseGuards, Query, BadRequestException, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Query, BadRequestException, Body, Get, Param } from '@nestjs/common';
 import { Roles } from 'src/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { ChangeRoleDTO } from 'src/models/adminpanel/change-role.dto';
 
 @Controller('admin-panel')
 export class AdminPanelController {
@@ -14,10 +15,21 @@ export class AdminPanelController {
 
     @Roles('Admin')
     @UseGuards(AuthGuard(), RolesGuard)
-    changeRole(@Body() user: GetUserDTO) {
-        if (!(+user.username) && !(+user.role)) {
-            return this.adminPanelSerrvice.changeUserRole(user);
+    changeRole(@Body() user: ChangeRoleDTO) {
+        if (user.role !== 'User' && user.role !== 'Admin' && user.role !== 'Banned' && user.role !== 'Team Lead'){
+            throw new BadRequestException('The role you have entered is invalid!')
         }
-        throw new BadRequestException('Username or role cannot be number');
+        return this.adminPanelSerrvice.changeUserRole(user);
+    }
+
+
+    @Get('/role')
+
+    @Roles('Admin')
+    @UseGuards(AuthGuard(), RolesGuard)
+    getRole(@Param() par) {
+        if (par.username){
+         this.adminPanelSerrvice.getUserRole(par);
+        }
     }
 }

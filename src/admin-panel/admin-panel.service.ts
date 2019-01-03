@@ -1,8 +1,9 @@
-import { GetUserDTO } from './../models/user/get-user.dto';
+
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../data/entities/users.entity';
 import { Repository } from 'typeorm';
+import { ChangeRoleDTO } from 'src/models/adminpanel/change-role.dto';
 
 @Injectable()
 export class AdminPanelService {
@@ -12,7 +13,7 @@ export class AdminPanelService {
 
     ) { }
 
-    async changeUserRole(user: GetUserDTO) {
+    async changeUserRole(user: ChangeRoleDTO) {
         const userFound = await this.usersRepository.findOne({ where: { username: user.username } });
         if (!userFound) {
             throw new BadRequestException('There is no such user with this username');
@@ -24,6 +25,12 @@ export class AdminPanelService {
             throw new BadRequestException('Cannot change user\'s admin role with another');
         }
         await this.usersRepository.update({ username: user.username }, { role: user.role });
-        return 'Role changed';
+        return `${userFound.username}'s role has been sucessfully changed to ${user.role}!`;
+    }
+
+    async getUserRole(username: string){
+        const user = await this.usersRepository.findOne({ where: { username } });
+        return `${user.username} is a/an ${user.role}`;
+
     }
 }
