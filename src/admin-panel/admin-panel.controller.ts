@@ -1,6 +1,6 @@
 
 import { AdminPanelService } from './admin-panel.service';
-import { Controller, Post, UseGuards, Query, BadRequestException, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, BadRequestException, Body, Get, Param, Query } from '@nestjs/common';
 import { Roles } from 'src/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
@@ -22,14 +22,11 @@ export class AdminPanelController {
         return this.adminPanelSerrvice.changeUserRole(user);
     }
 
-
     @Get('/role')
 
     @Roles('Admin')
     @UseGuards(AuthGuard(), RolesGuard)
-    getRole(@Param() par) {
-        if (par.username){
-         this.adminPanelSerrvice.getUserRole(par);
-        }
+    async getRole(@Query() params) {
+        return await this.adminPanelSerrvice.getUserRole(params.username);
     }
 }

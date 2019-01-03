@@ -29,7 +29,12 @@ export class AdminPanelService {
     }
 
     async getUserRole(username: string){
-        const user = await this.usersRepository.findOne({ where: { username } });
+        let user: Users;
+        await this.usersRepository.findOneOrFail({ where: { username } }).then((res) => {
+            user = res;
+        }).catch((error) => {
+            throw new BadRequestException(`No user with nickname ${username}!`)
+        });
         return `${user.username} is a/an ${user.role}`;
 
     }
