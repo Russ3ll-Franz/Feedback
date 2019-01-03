@@ -27,15 +27,15 @@ export class ProjectsController {
         return this.projectService.findAll();
     }
 
-    @Get('/id')
+    @Get(':id')
 
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
-    async getOne(@Param('id') id): Promise<any> {
-        if (+id) {
-            return this.projectService.getProject(id);
+    async getOne(@Param() params): Promise<any> {
+        if (+params.id) {
+            return this.projectService.getProject(params.id);
         }
-        throw new BadRequestException('Invalid team id');
+        throw new BadRequestException(`Invalid team id ${params.id}`);
     }
 
     @Get(':id/members')

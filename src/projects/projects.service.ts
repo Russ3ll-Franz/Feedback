@@ -27,24 +27,35 @@ export class ProjectsService {
         try {
             const projects = await this.projectRepository.find();
 
-            const pr = projects.map( (project) => {
-                const info =  {
+            const projectsInfo = projects.map((project) => {
+                const info = {
                     projectName: project.projectName,
                     teamMembers: project.teamMembers,
-                    users: project.user.map( (user) => {
-                        return  `${user.firstName} ${user.lastName} - ${user.email}`;
+                    users: project.user.map((user) => {
+                        return `${user.firstName} ${user.lastName} - ${user.email}`;
                     }),
                 };
-                return  info;
+                return info;
             });
-            return pr;
+            return projectsInfo;
         } catch (error) {
             throw new BadRequestException(`No teams to show`);
         }
     }
     async getProject(id): Promise<any> {
         try {
-            return await this.projectRepository.findOneOrFail({ where: { teamID: +id } });
+            const project = await this.projectRepository.findOneOrFail({ where: { teamID: +id } });
+            const projectsInfo = {
+                projectName: project.projectName,
+                teamMembers: project.teamMembers,
+                startDate: project.startDate,
+                endDate: project.endDate,
+                users: project.user.map((user) => {
+                    return `${user.firstName} ${user.lastName} - ${user.email}`;
+                }),
+            };
+            return projectsInfo;
+
         } catch (error) {
             throw new BadRequestException(`Team with id:${id} was not found`);
         }
@@ -71,14 +82,25 @@ export class ProjectsService {
         } catch (error) {
             throw new BadRequestException('Check project id', `Team with id:${memberInfo.id} does not exist.`);
         }
+
         let member = {};
         await team.user.forEach((user) => {
             if (user.username === memberInfo.username) {
                 member = {
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    received: user.received,
-                    sent: user.sent,
+                    received: user.received.map((info) => {
+                        return {
+                            feedback: info.feedback,
+                            teamID: info.teamID,
+                        };
+                    }),
+                    sent: user.sent.map((info) => {
+                        return {
+                            feedback: info.feedback,
+                            teamID: info.teamID,
+                        };
+                    }),
                 };
             }
         });
