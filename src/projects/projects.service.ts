@@ -1,3 +1,4 @@
+import { FileService } from './../common/core/file.service';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Teams } from './../data/entities/teams.entity';
 import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
@@ -22,16 +23,28 @@ export class ProjectsService {
         return result;
     }
 
-    async findAll(): Promise<Teams[]> {
+    async findAll() {
         try {
-            return await this.projectRepository.find();
+            const projects = await this.projectRepository.find();
+
+            const pr = projects.map( (project) => {
+                const info =  {
+                    projectName: project.projectName,
+                    teamMembers: project.teamMembers,
+                    users: project.user.map( (user) => {
+                        return  `${user.firstName} ${user.lastName} - ${user.email}`;
+                    }),
+                };
+                return  info;
+            });
+            return pr;
         } catch (error) {
             throw new BadRequestException(`No teams to show`);
         }
     }
     async getProject(id): Promise<any> {
         try {
-            return await this.projectRepository.findOneOrFail({ where: { teamID: id } });
+            return await this.projectRepository.findOneOrFail({ where: { teamID: +id } });
         } catch (error) {
             throw new BadRequestException(`Team with id:${id} was not found`);
         }
@@ -54,11 +67,10 @@ export class ProjectsService {
     async getMemberFeedbacklog(memberInfo): Promise<any> {
         let team: Teams;
         try {
-            team = await this.projectRepository.findOneOrFail({ where: { teamID: memberInfo.id } });
+            team = await this.projectRepository.findOneOrFail({ where: { teamID: +memberInfo.id } });
         } catch (error) {
             throw new BadRequestException('Check project id', `Team with id:${memberInfo.id} does not exist.`);
         }
-
         let member = {};
         await team.user.forEach((user) => {
             if (user.username === memberInfo.username) {

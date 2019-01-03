@@ -12,11 +12,6 @@ export class ProjectsController {
 
     @Get()
 
-    getAllProjects(): Promise<Teams[]> {
-        return this.projectService.findAll();
-    }
-    @Get()
-
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
     // projects?id=1&username=m.bechev
@@ -27,7 +22,12 @@ export class ProjectsController {
         throw new BadRequestException('Invalid project id or username');
     }
 
-    @Get(':id')
+    @Get('all')
+    getAllProjects(): any {
+        return this.projectService.findAll();
+    }
+
+    @Get('/id')
 
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
