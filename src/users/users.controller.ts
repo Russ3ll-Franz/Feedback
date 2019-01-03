@@ -1,6 +1,6 @@
 import { GetUserDTO } from './../models/user/get-user.dto';
 import { UserRegisterDTO } from '../models/user/user-register.dto';
-import { Controller, Body, Post, Query, BadRequestException, Param, Get, UseGuards } from '@nestjs/common';
+import { Controller, Body, Post, Query, BadRequestException, Param, Get, UseGuards, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
 
 @Controller('users')
@@ -21,7 +21,17 @@ export class UsersController {
   }
 
   @Post('register')
-  userRegister(@Body() user: UserRegisterDTO) {
-    return this.usersService.registerUser(user);
+  async register(@Body(new ValidationPipe({
+    transform: true, whitelist: true,
+    }))
+    user: UserRegisterDTO,
+  ): Promise<any> {
+
+    try {
+      await this.usersService.registerUser(user);
+      return 'User added to database';
+    } catch (error) {
+      return (error.message);
+    }
   }
 }

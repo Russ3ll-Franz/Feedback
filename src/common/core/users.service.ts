@@ -1,3 +1,4 @@
+import { UserRegisterDTO } from './../../models/user/user-register.dto';
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
@@ -19,6 +20,7 @@ export class UsersService {
   async registerUser(user) {
     try {
       const userNameFound = await this.usersRepository.findOne({ where: { username: user.username } });
+
       if (userNameFound) {
         throw new BadRequestException('There is already such username registered!');
       }
@@ -31,8 +33,7 @@ export class UsersService {
       user.password = await bcrypt.hash(user.password, 10);
 
       await this.usersRepository.create(user);
-      throw await this.usersRepository.save([user]);
-
+      return await this.usersRepository.save([user]);
     } catch (error) {
       throw new BadRequestException('Check input fields', 'Invalid user input field');
     }
@@ -44,10 +45,11 @@ export class UsersService {
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
-    // tslint:disable-next-line:max-line-length
-    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['username', 'password', 'role'], where: { username: user.username } });
+    const userFound: GetUserDTO = await this.usersRepository.findOne(
+      { select: ['username', 'password', 'role'], where: { username: user.username } });
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);
+
       if (result) {
         return userFound;
       }
