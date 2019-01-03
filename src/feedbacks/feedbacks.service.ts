@@ -29,25 +29,25 @@ export class FeedbackService {
       let usersTeams;
 
       await this.entityManager.query(
-        `SELECT COUNT(usersUserID) from teams_user_users
+        `SELECT COUNT(usersUserID) AS matches from teams_user_users
         WHERE usersUserID IN(${senderID}, ${receiverID.userID})
         AND teamsTeamID = ${body.teamID}`,
       ).then((response) => {
-        usersTeams = response;
+        usersTeams = response[0].matches;
       });
 
-      // let isAlreadyGivenFeedback: any;
-      // await this.entityManager
-      // .find(Feedbacklog,
-      //   { select: ['feedback', 'senderUserID'], where: { senderUserID: senderID },
-      // }).then((result) => {
-      //   //  if (result.sender === senderID && result.receiver === receiverID.userID && result.teamID === body.teamID) {
-      //   //   console.log('ebi si maikata shiban komp')
-      //   //  }
-      //   console.log(result);
-      // });
+      let isAlreadyGivenFeedback: any;
+      await this.entityManager
+      .find(Feedbacklog,
+        { select: ['feedback', 'sender'], where: { sender: senderID },
+      }).then((result) => {
+        if(result.length !== 0){
+          throw new Error('You have already given this person a feedback!')
+        }
+        console.log(result);
+      });
 
-      if (usersTeams.length !== 2) {
+      if (usersTeams !== '2') {
         throw new Error('You and the person you want to vote for are not in the team you have specified!');
       }
 
@@ -68,6 +68,7 @@ export class FeedbackService {
       newFeedback.feedback = body.feedback;
       newFeedback.receiver = receiverID;
       newFeedback.sender = sender;
+      newFeedback.teamID = body.teamID;
       await this.entityManager.save(newFeedback);
 
       return `Successfully created feedback!`;
