@@ -43,22 +43,23 @@ export class ProjectsService {
         }
     }
     async getProject(id): Promise<any> {
+        let project;
         try {
-            const project = await this.projectRepository.findOneOrFail({ where: { teamID: +id } });
-            const projectsInfo = {
-                projectName: project.projectName,
-                teamMembers: project.teamMembers,
-                startDate: project.startDate,
-                endDate: project.endDate,
-                users: project.user.map((user) => {
-                    return `${user.firstName} ${user.lastName} - ${user.email}`;
-                }),
-            };
-            return projectsInfo;
+            project = await this.projectRepository.findOneOrFail({ where: { teamID: +id } });
 
         } catch (error) {
             throw new BadRequestException(`Team with id:${id} was not found`);
         }
+        const projectsInfo = {
+            projectName: project.projectName,
+            teamMembers: project.teamMembers,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            users: project.user.map((user) => {
+                return `${user.firstName} ${user.lastName} - ${user.email}`;
+            }),
+        };
+        return projectsInfo;
     }
 
     async getMembers(id): Promise<any> {

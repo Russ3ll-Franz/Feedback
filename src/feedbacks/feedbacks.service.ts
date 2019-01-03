@@ -1,7 +1,7 @@
 import { FeedbackDTO } from './../models/user/feedback.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager} from 'typeorm';
+import { EntityManager, FindOperator} from 'typeorm';
 import { Feedbacklog } from '../data/entities/feedbacklog.entity';
 import { Users } from '../data/entities/users.entity';
 
@@ -24,6 +24,11 @@ export class FeedbackService {
     try {
       const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
       const senderID = sender.userID;
+
+      if (receiverID.userID === senderID) {
+        throw new BadRequestException(`You can not give feedback to yourself!`);
+      }
+
       let usersTeams;
 
       await this.entityManager.query(
@@ -34,22 +39,14 @@ export class FeedbackService {
         usersTeams = response[0].matches;
       });
 
-      await this.entityManager
-      .find(Feedbacklog,
-        { select: ['feedback', 'sender'], where: { sender: senderID },
-      })
-      .then((result) => {
-        if (result.length !== 0){
-          throw new Error('You have already given this person a feedback!');
+      await this.entityManager.findOne(Feedbacklog, { where: { sender: senderID, receiver: receiverID }}).then((res) => {
+        if (res !== undefined){
+        throw new BadRequestException('You have already given a feedback to this user!');
         }
       });
 
       if (usersTeams !== '2') {
-        throw new Error('You and the person you want to vote for are not in the team you have specified!');
-      }
-
-      if (receiverID.userID === senderID) {
-        throw new BadRequestException(`You can not give feedback to yourself!`);
+        throw new BadRequestException('You and the person you want to vote for are not in the team you have specified!');
       }
 
       const receivedFeedbacksCount = await this.entityManager
@@ -63,8 +60,8 @@ export class FeedbackService {
 
       const newFeedback = await this.entityManager.create(Feedbacklog);
       newFeedback.feedback = body.feedback;
-      newFeedback.receiver = receiverID;
-      newFeedback.sender = sender;
+      newFeedback.receiver = Promise.resolve(await this.entityManager.findOneOrFail(Users, { where: { username: body.receiver } }));
+      newFeedback.sender = Promise.resolve(sender);
       newFeedback.teamID = body.teamID;
       await this.entityManager.save(newFeedback);
 
