@@ -36,15 +36,14 @@ export class FeedbackService {
         usersTeams = response[0].matches;
       });
 
-      let isAlreadyGivenFeedback: any;
       await this.entityManager
       .find(Feedbacklog,
         { select: ['feedback', 'sender'], where: { sender: senderID },
-      }).then((result) => {
-        if(result.length !== 0){
+      })
+      .then((result) => {
+        if (result.length !== 0){
           throw new Error('You have already given this person a feedback!')
         }
-        console.log(result);
       });
 
       if (usersTeams !== '2') {
@@ -79,7 +78,6 @@ export class FeedbackService {
 
   async findOne(projectID: number): Promise<Feedbacklog> {
     try {
-      const Feedback = this.entityManager.findOne(Feedbacklog, { where: { feedbackLogID: projectID } });
       return await this.entityManager.findOne(Feedbacklog, { where: { feedbackLogID: projectID } });
     } catch (error) {
       return error;

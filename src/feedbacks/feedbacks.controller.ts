@@ -14,14 +14,26 @@ export class FeedbacksController {
 
   @Get()
 
-  @Post('/new')
   @Roles('Team Lead', 'Admin', 'User')
   @UseGuards(AuthGuard(), RolesGuard)
   findFeedbacks(@Query() QParams) {
-    if (QParams.feedbackid) {
-      return this.feedbackService.findOne(QParams.feedbackid);
+    if (QParams.id) {
+      return this.feedbackService.findOne(QParams.id).then((res) => {
+        return res;
+      }).catch((err) => {
+        throw new Error('No team with such an ID');
+      });
     }
-    return this.feedbackService.findAll();
+    if (QParams.all){
+      return this.feedbackService.findAll();
+    }
+    if (QParams.projectName){
+      return this.feedbackService.findOne(QParams.projectName);
+    }
+    else{
+      return 'Sorry we were unable to find any teams with the parameters you gave us, if you want you can use ?all to find all teams!';
+    }
+
   }
 
   @Post('/new')
