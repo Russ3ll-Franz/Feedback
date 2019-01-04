@@ -1,6 +1,5 @@
 import { Users } from '../data/entities/users.entity';
 import { FeedbackDTO } from '../models/user/feedback.dto';
-import { FeedbacksController } from '../feedbacks/feedbacks.controller';
 import { FeedbackService } from '../feedbacks/feedbacks.service';
 
 describe('Feedbacks Service', () => {
