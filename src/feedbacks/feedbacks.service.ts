@@ -71,11 +71,11 @@ export class FeedbackService {
     }
   }
 
-  async findOne(projectID: number): Promise<Feedbacklog> {
+  async findByID(feedbackID: number): Promise<Feedbacklog> {
     try {
-      return await this.entityManager.findOne(Feedbacklog, { where: { feedbacklogID: projectID } });
+      return await this.entityManager.findOneOrFail(Feedbacklog, { where: { feedbacklogID: feedbackID } });
     } catch (error) {
-      return error;
+      throw new BadRequestException(`No feedback with id ${feedbackID}`)
     }
   }
 }

@@ -19,10 +19,10 @@ export class FeedbacksController {
   @UseGuards(AuthGuard(), RolesGuard)
   async findFeedbacks(@Query() QParams, @Request() req) {
     if (QParams.id) {
-      const feedback = await this.feedbackService.findOne(+QParams.id);
+      const feedback = await this.feedbackService.findByID(+QParams.id);
       const sender = await feedback.sender;
       const reciever = await feedback.receiver;
-      if (sender.userID === req.user.userID || req.user.userID === reciever.userID){
+      if (sender.userID === req.user.userID || req.user.userID === reciever.userID || req.user.role === 'Admin' || req.user.role === 'Team Lead'){
         return {
           Sender: sender.email,
           Reciever: reciever.email,
