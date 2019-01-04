@@ -1,7 +1,7 @@
 import { FeedbackDTO } from './../models/user/feedback.dto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, FindOperator} from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Feedbacklog } from '../data/entities/feedbacklog.entity';
 import { Users } from '../data/entities/users.entity';
 
@@ -12,11 +12,24 @@ export class FeedbackService {
     private entityManager: EntityManager,
   ) { }
 
-  async findAll(): Promise<Feedbacklog[]> {
+  async findAll() {
     try {
-      return await this.entityManager.find(Feedbacklog, {});
+      const feedbacks = await this.entityManager.find(Feedbacklog, {});
+
+      const object = Promise.all(feedbacks.map(async (feedback) => {
+        const sender = await feedback.sender;
+        const reciever = await feedback.receiver;
+        return {
+          id: feedback.feedbacklogID,
+          Feedback: feedback.feedback,
+          Sender: sender.email,
+          Reciever: reciever.email,
+        };
+      }));
+
+      return object;
     } catch (error) {
-      return error;
+      throw new BadRequestException('There is no feedback to show');
     }
   }
 
@@ -39,9 +52,9 @@ export class FeedbackService {
         usersTeams = response[0].matches;
       });
 
-      await this.entityManager.findOne(Feedbacklog, { where: { sender: senderID, receiver: receiverID }}).then((res) => {
-        if (res !== undefined){
-        throw new BadRequestException('You have already given a feedback to this user!');
+      await this.entityManager.findOne(Feedbacklog, { where: { sender: senderID, receiver: receiverID } }).then((res) => {
+        if (res !== undefined) {
+          throw new BadRequestException('You have already given a feedback to this user!');
         }
       });
 
@@ -75,7 +88,7 @@ export class FeedbackService {
     try {
       return await this.entityManager.findOneOrFail(Feedbacklog, { where: { feedbacklogID: feedbackID } });
     } catch (error) {
-      throw new BadRequestException(`No feedback with id ${feedbackID}`)
+      throw new BadRequestException(`No feedback with id ${feedbackID}`);
     }
   }
 }
