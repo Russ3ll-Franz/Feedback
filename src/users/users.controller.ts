@@ -1,14 +1,14 @@
 import { AuthService } from './../auth/auth.service';
-import { GetUserDTO } from './../models/user/get-user.dto';
 import { UserRegisterDTO } from '../models/user/user-register.dto';
-import { Controller, Body, Post, Query, BadRequestException, Param, Get, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Controller, Body, Post, BadRequestException, Param, Get, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
-import { UserLoginDTO } from 'src/models/user/user-login.dto';
+import { UserLoginDTO } from '../models/user/user-login.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService,
-              private readonly authService: AuthService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService) { }
 
   @Get(':username')
   gerUser(@Param() param) {
@@ -29,8 +29,8 @@ export class UsersController {
   @Post('register')
   async register(@Body(new ValidationPipe({
     transform: true, whitelist: true,
-    }))
-    user: UserRegisterDTO,
+  }))
+  user: UserRegisterDTO,
   ): Promise<any> {
 
     try {
