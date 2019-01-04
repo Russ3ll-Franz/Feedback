@@ -21,7 +21,7 @@ export class FeedbacksController {
     if (QParams.id) {
       const feedback = await this.feedbackService.findByID(+QParams.id);
       const sender = await feedback.sender;
-      const reciever = await feedback.receiver;
+      const reciever = await feedback.reciever;
       if (sender.userID === req.user.userID || req.user.userID === reciever.userID || req.user.role === 'Admin' || req.user.role === 'Team Lead'){
         return {
           Sender: sender.email,
@@ -45,7 +45,7 @@ export class FeedbacksController {
     const feedbacks: Feedbacklog[] = await this.feedbackService.findAll();
     return await Promise.all(feedbacks.map(async (feedback) => {
       const sender = await feedback.sender;
-      const reciever = await feedback.receiver;
+      const reciever = await feedback.reciever;
       return { id: feedback.feedbacklogID,
         Feedback: feedback.feedback,
         Sender: sender.email,

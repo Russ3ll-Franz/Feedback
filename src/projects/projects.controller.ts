@@ -1,7 +1,7 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
-import { Controller, Get, Post, Body, Param, BadRequestException, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException, Request, Query, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Roles } from '../common';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
@@ -15,7 +15,10 @@ export class ProjectsController {
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
     // projects?id=1&username=m.bechev
-    async memberFeedbacklog(@Query() memberInfo): Promise<any> {
+    async memberFeedbacklog(@Query() memberInfo, @Request() req): Promise<any> {
+        if (req.user.username !== memberInfo.username && req.user.role !== 'Admin' && req.user.role !== 'Team Lead'){
+            throw new BadRequestException('You are only allowed to see your feedbacks!')
+        }
         if ((+memberInfo.id) && !(+memberInfo.username)) {
             return this.projectService.getMemberFeedbacklog(memberInfo);
         }
@@ -23,6 +26,8 @@ export class ProjectsController {
     }
 
     @Get('all')
+    @Roles('Team Lead', 'Admin', 'User')
+    @UseGuards(AuthGuard(), RolesGuard)
     getAllProjects(): any {
         return this.projectService.findAll();
     }

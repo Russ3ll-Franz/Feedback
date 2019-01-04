@@ -22,10 +22,12 @@ export class FeedbackService {
 
   async addNew(body: FeedbackDTO, sender: Users) {
     try {
-      const receiverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.receiver } });
+      const recieverID = await this.entityManager.findOneOrFail(Users, { select: ['userID'], where: { username: body.reciever } }).catch(() => {
+        throw new BadRequestException(`There is no such user!`)
+      });
       const senderID = sender.userID;
 
-      if (receiverID.userID === senderID) {
+      if (recieverID.userID === senderID) {
         throw new BadRequestException(`You can not give feedback to yourself!`);
       }
 
@@ -33,13 +35,13 @@ export class FeedbackService {
 
       await this.entityManager.query(
         `SELECT COUNT(usersUserID) AS matches from teams_user_users
-        WHERE usersUserID IN(${senderID}, ${receiverID.userID})
+        WHERE usersUserID IN(${senderID}, ${recieverID.userID})
         AND teamsTeamID = ${body.teamID}`,
       ).then((response) => {
         usersTeams = response[0].matches;
       });
 
-      await this.entityManager.findOne(Feedbacklog, { where: { sender: senderID, receiver: receiverID }}).then((res) => {
+      await this.entityManager.findOne(Feedbacklog, { where: { sender: senderID, reciever: recieverID }}).then((res) => {
         if (res !== undefined){
         throw new BadRequestException('You have already given a feedback to this user!');
         }
@@ -50,24 +52,24 @@ export class FeedbackService {
       }
 
       const receivedFeedbacksCount = await this.entityManager
-        .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.receiver } });
+        .findOne(Users, { select: ['receivedFeedbacks'], where: { username: body.reciever } });
 
       const givenFeedbacksCount = await this.entityManager
         .findOne(Users, { select: ['givenFeedbacks'], where: { username: sender.username } });
 
-      await this.entityManager.update(Users, receiverID, { receivedFeedbacks: Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
+      await this.entityManager.update(Users, recieverID, { receivedFeedbacks: Number(receivedFeedbacksCount.receivedFeedbacks) + 1 });
       await this.entityManager.update(Users, sender, { givenFeedbacks: Number(givenFeedbacksCount.givenFeedbacks) + 1 });
 
       const newFeedback = await this.entityManager.create(Feedbacklog);
       newFeedback.feedback = body.feedback;
-      newFeedback.receiver = Promise.resolve(await this.entityManager.findOneOrFail(Users, { where: { username: body.receiver } }));
+      newFeedback.reciever = Promise.resolve(await this.entityManager.findOneOrFail(Users, { where: { username: body.reciever } }));
       newFeedback.sender = Promise.resolve(sender);
       newFeedback.teamID = body.teamID;
       await this.entityManager.save(newFeedback);
 
       return `Successfully created feedback!`;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException(error.message.message);
     }
   }
 

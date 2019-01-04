@@ -26,7 +26,7 @@ export class Feedbacklog {
     teamID: number;
 
     @ManyToOne(type => Users, users => users.received)
-    receiver: Promise<Users>;
+    reciever: Promise<Users>;
 
     @ManyToOne(type => Users, users => users.sent)
     sender: Promise<Users>;

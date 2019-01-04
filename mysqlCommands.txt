@@ -41,7 +41,7 @@ VALUES
 
 /* Some feedbacks */
 
-INSERT INTO feedbacklog (feedbackLogID, feedback, receiverUserID, senderUserID, teamID)
+INSERT INTO feedbacklog (feedbackLogID, feedback, recieverUserID, senderUserID, teamID)
 VALUES
 (1, 'Toz e golqm divak chestno. Iqde vsichkite sladki deto kupihme!',
 5, 3, 1),

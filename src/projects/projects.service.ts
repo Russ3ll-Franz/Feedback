@@ -106,7 +106,8 @@ export class ProjectsService {
         });
 
         if (Object.keys(member).length === 0) {
-            throw new BadRequestException('Check username', `User with username:${memberInfo.username} does not exist.`);
+            throw new BadRequestException('Check username',
+             `User with username: ${memberInfo.username} does not exist or is not in team with id ${ memberInfo.id }`);
         }
 
         return member;

@@ -81,7 +81,7 @@ export class Users {
     @ManyToMany(type => Teams, team => team.user)
     team: Teams[];
 
-    @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.receiver, { eager: true })
+    @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.reciever, { eager: true })
     received: Feedbacklog[];
 
     @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.sender, { eager: true })
