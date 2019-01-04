@@ -48,6 +48,7 @@ The last thing you need to do is to run the app
 
 ## Authentication
 The four different roles have different access to the routes.
+
 | Banned| User | Team Lead | Admin|
 |--|--|--|--|
 | No access to any routes other than registration and login | Can create and feedbacks in the context of a team that he is in and can view only his own feedbacks (recieved and sent) | Same as the user but can create a team(project)| Full access to all routes and a custom made admin-panel |
