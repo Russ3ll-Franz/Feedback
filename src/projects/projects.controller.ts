@@ -33,9 +33,7 @@ export class ProjectsController {
     @UseGuards(AuthGuard(), RolesGuard)
     async getOne(@Param() params) {
         if (+params.id) {
-            return await this.projectService.getProject(params.id).catch(() => {
-                throw new BadRequestException(`Invalid team id ${params.id}`);
-            });
+            return await this.projectService.getProject(params.id);
         }
         throw new BadRequestException(`Invalid team id ${params.id}`);
     }
