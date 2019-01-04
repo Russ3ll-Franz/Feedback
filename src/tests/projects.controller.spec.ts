@@ -2,8 +2,7 @@ import { AddProjectDTO } from './../models/user/projects.dto';
 import { ProjectsService } from '../projects/projects.service';
 import { ProjectsController } from '../projects/projects.controller';
 
-jest.mock('./../projects/projects.service');
-jest.mock('../projects/projects.controller');
+jest.mock('../projects/projects.service');
 
 describe('Projects Controller', () => {
     let projectCtrl: ProjectsController;
@@ -14,48 +13,9 @@ describe('Projects Controller', () => {
         projectCtrl = new ProjectsController(projectService);
     });
 
-    it('should call memberFeedbacklog method', async () => {
+    it('should call ProjectService addProject method', async () => {
         // Arrange
-        jest.spyOn(projectCtrl, 'memberFeedbacklog').mockImplementation(() => {
-            return 'test';
-        });
-
-        // Act
-        await projectCtrl.memberFeedbacklog('');
-
-        // Assert
-        expect(projectCtrl.memberFeedbacklog).toBeCalledTimes(1);
-    });
-
-    it('should call getOne method', async () => {
-        // Arrange
-        jest.spyOn(projectCtrl, 'getOne').mockImplementation(() => {
-            return 'test';
-        });
-
-        // Act
-        await projectCtrl.getOne('');
-
-        // Assert
-        expect(projectCtrl.getOne).toBeCalledTimes(1);
-    });
-
-    it('should call showMembers method', async () => {
-        // Arrange
-        jest.spyOn(projectCtrl, 'showMembers').mockImplementation(() => {
-            return 'test';
-        });
-
-        // Act
-        await projectCtrl.showMembers('');
-
-        // Assert
-        expect(projectCtrl.showMembers).toBeCalledTimes(1);
-    });
-
-    it('should call addProject method', async () => {
-        // Arrange
-        jest.spyOn(projectCtrl, 'addProject').mockImplementation(() => {
+        jest.spyOn(projectService, 'addProject').mockImplementation(() => {
             return 'test';
         });
         const project: AddProjectDTO = new AddProjectDTO();
@@ -64,20 +24,66 @@ describe('Projects Controller', () => {
         await projectCtrl.addProject(project);
 
         // Assert
-        expect(projectCtrl.addProject).toBeCalledTimes(1);
+        expect(projectService.addProject).toHaveBeenCalledTimes(1);
     });
 
-    it('should call addProject method', async () => {
+    it('should call ProjectService findAll method', async () => {
         // Arrange
-        jest.spyOn(projectCtrl, 'getAllProjects').mockImplementation(() => {
+        jest.spyOn(projectService, 'findAll').mockImplementation(() => {
             return 'test';
         });
-        const project: AddProjectDTO = new AddProjectDTO();
 
         // // Act
         await projectCtrl.getAllProjects();
 
         // Assert
-        expect(projectCtrl.getAllProjects).toBeCalledTimes(1);
+        expect(projectService.findAll).toHaveBeenCalledTimes(1);
     });
+
+    it('should call ProjectService getProject method', async () => {
+        // Arrange
+        jest.spyOn(projectService, 'getProject').mockImplementation(() => {
+            return 'test';
+        });
+        const params = {
+            id: 1,
+        };
+
+        // // Act
+        await projectCtrl.getOne(params);
+
+        // Assert
+        expect(projectService.getProject).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call ProjectService getMemberFeedbacklog method', async () => {
+        // Arrange
+        jest.spyOn(projectService, 'getMemberFeedbacklog').mockImplementation(() => {
+            return 'test';
+        });
+        const memberInfo = {
+            id: 1,
+            username: 'm.bechev',
+        };
+
+        // // Act
+        await projectCtrl.memberFeedbacklog(memberInfo);
+
+        // Assert
+        expect(projectService.getMemberFeedbacklog).toHaveBeenCalledTimes(1);;
+    });
+
+    it('should call ProjectService getMembers method', async () => {
+        // Arrange
+        jest.spyOn(projectService, 'getMembers').mockImplementation(() => {
+            return 'test';
+        });
+
+        // // Act
+        await projectCtrl.showMembers('1');
+
+        // Assert
+        expect(projectService.getMembers).toHaveBeenCalledTimes(1);;
+    });
+
 });

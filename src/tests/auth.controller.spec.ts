@@ -31,17 +31,4 @@ describe('AuthController', () => {
     // Assert
     expect(authServ.signIn).toHaveBeenCalledTimes(1);
   });
-
-  it('should call UsersService register method', async () => {
-    // Arrange
-    jest.spyOn(authServ, 'signIn').mockImplementation(() => {
-      return 'token';
-    });
-
-    // Act
-    await ctrl.register(user);
-
-    // Assert
-    expect(userServ.registerUser).toHaveBeenCalledTimes(1);
-  });
 });

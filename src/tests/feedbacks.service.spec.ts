@@ -1,17 +1,13 @@
+import { Users } from '../data/entities/users.entity';
 import { FeedbackDTO } from '../models/user/feedback.dto';
 import { FeedbacksController } from '../feedbacks/feedbacks.controller';
 import { FeedbackService } from '../feedbacks/feedbacks.service';
 
-jest.mock('./../feedbacks/feedbacks.service');
-jest.mock('../feedbacks/feedbacks.controller');
-
 describe('Feedbacks Service', () => {
     let feedbackServ: FeedbackService;
-    let feedbackCtrl: FeedbacksController;
 
     beforeEach(() => {
         feedbackServ = new FeedbackService(null);
-        feedbackCtrl = new FeedbacksController(feedbackServ);
     });
 
     it('should call findAll method', async () => {
@@ -20,10 +16,7 @@ describe('Feedbacks Service', () => {
             return 'test';
         });
 
-        // Act
-        await feedbackCtrl.findFeedbacks(null);
-
-        // Assert
+        // Act & Assert
         expect(feedbackServ.findAll()).toBe('test');
     });
 
@@ -33,25 +26,20 @@ describe('Feedbacks Service', () => {
             return 'test';
         });
         const feedback: FeedbackDTO = new FeedbackDTO();
+        const sender: Users = new Users();
 
-        // Act
-        await feedbackCtrl.addFeedback(feedback, null);
-
-        // Assert
-        expect(feedbackServ.addNew(feedback, '')).toBe('test');
+        // Act & Assert
+        expect(feedbackServ.addNew(feedback, sender)).toBe('test');
     });
 
-    it('should call findOne method', async () => {
+    it('should call findByID method', async () => {
         // Arrange
-        jest.spyOn(feedbackServ, 'findOne').mockImplementation(() => {
+        jest.spyOn(feedbackServ, 'findByID').mockImplementation(() => {
             return 'test value';
         });
 
-        // Act
-        await feedbackCtrl.findFeedbacks('');
-
-        // Assert
-        expect(feedbackServ.findOne(1)).toBe('test value');
+        // Act & Assert
+        expect(feedbackServ.findByID(1)).toBe('test value');
 
     });
 });

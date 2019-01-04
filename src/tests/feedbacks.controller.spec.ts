@@ -1,43 +1,61 @@
-import { FeedbackDTO } from './../models/user/feedback.dto';
 import { FeedbacksController } from '../feedbacks/feedbacks.controller';
 import { FeedbackService } from '../feedbacks/feedbacks.service';
+import { EntityManager } from 'typeorm';
+import { Users } from '../data/entities/users.entity';
+import { FeedbackDTO } from '../models/user/feedback.dto';
 
-jest.mock('./../feedbacks/feedbacks.service');
-jest.mock('../feedbacks/feedbacks.controller');
+jest.mock('../feedbacks/feedbacks.service');
 
 describe('Feedbacks Controller', () => {
     let feedbackServ: FeedbackService;
     let feedbackCtrl: FeedbacksController;
 
     beforeEach(() => {
-        feedbackServ = new FeedbackService(null);
+        const entityManager: EntityManager = new EntityManager(null);
+        feedbackServ = new FeedbackService(entityManager);
         feedbackCtrl = new FeedbacksController(feedbackServ);
     });
 
-    it('should call findFeedbacks method', async () => {
+    it('should call FeedbackService findAll method', async () => {
         // Arrange
-        jest.spyOn(feedbackCtrl, 'findFeedbacks').mockImplementation(() => {
+        jest.spyOn(feedbackServ, 'findAll').mockImplementation(() => {
             return 'test';
         });
 
         // Act
-        await feedbackCtrl.findFeedbacks(null);
+        await feedbackCtrl.findAllFeedbacks();
 
         // Assert
-        expect(feedbackCtrl.findFeedbacks).toBeCalledTimes(1);
+        expect(feedbackServ.findAll).toHaveBeenCalledTimes(1);
     });
 
-    it('should call addFeedback method', async () => {
+    it('should call FeedbackService addNew method', async () => {
         // Arrange
-        jest.spyOn(feedbackCtrl, 'addFeedback').mockImplementation(() => {
+        jest.spyOn(feedbackServ, 'addNew').mockImplementation(() => {
             return 'test';
+        });
+        const feedback: FeedbackDTO = new FeedbackDTO();
+        const user: Users = new Users();
+
+        // Act
+        await feedbackCtrl.addFeedback(feedback, '');
+
+        // Assert
+        expect(feedbackServ.addNew(feedback, user)).toBe('test');
+    });
+
+    it('should call FeedbackService findByID method', async () => {
+        // Arrange
+        jest.spyOn(feedbackServ, 'findByID').mockImplementation(() => {
+            return 'debaa';
         });
         const feedback: FeedbackDTO = new FeedbackDTO();
 
         // Act
-        await feedbackCtrl.addFeedback(feedback, null);
+        await feedbackCtrl.findFeedbacks(feedback, '');
 
         // Assert
-        expect(feedbackCtrl.addFeedback).toBeCalledTimes(1);
+        expect(feedbackServ.findByID(1)).toBe('debaa');
     });
+
 });
