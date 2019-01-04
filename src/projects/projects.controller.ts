@@ -16,11 +16,12 @@ export class ProjectsController {
     @UseGuards(AuthGuard(), RolesGuard)
     // projects?id=1&username=m.bechev
     async memberFeedbacklog(@Query() memberInfo, @Request() req): Promise<any> {
-        if (req.user.username !== memberInfo.username && req.user.role !== 'Admin' && req.user.role !== 'Team Lead'){
-            throw new BadRequestException('You are only allowed to see your feedbacks!')
-        }
         if ((+memberInfo.id) && !(+memberInfo.username)) {
             return this.projectService.getMemberFeedbacklog(memberInfo);
+        }
+
+        if (req.user.username !== memberInfo.username && req.user.role !== 'Admin' && req.user.role !== 'Team Lead') {
+            throw new BadRequestException('You are only allowed to see your feedbacks!');
         }
         throw new BadRequestException('Invalid project id or username');
     }

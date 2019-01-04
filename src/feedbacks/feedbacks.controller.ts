@@ -19,13 +19,10 @@ export class FeedbacksController {
     if (QParams.id) {
       const feedback = await this.feedbackService.findByID(+QParams.id);
       const sender = await feedback.sender;
-<<<<<<< HEAD
+
       const reciever = await feedback.reciever;
-      if (sender.userID === req.user.userID || req.user.userID === reciever.userID || req.user.role === 'Admin' || req.user.role === 'Team Lead'){
-=======
-      const reciever = await feedback.receiver;
       if (sender.userID === req.user.userID || req.user.userID === reciever.userID || req.user.role === 'Admin' || req.user.role === 'Team Lead') {
->>>>>>> b9212882ea0c7d5ba865ea5b9c79e7173144347a
+
         return {
           Sender: sender.email,
           Reciever: reciever.email,
@@ -44,22 +41,9 @@ export class FeedbacksController {
 
   @Roles('Team Lead', 'Admin')
   @UseGuards(AuthGuard(), RolesGuard)
-<<<<<<< HEAD
-  async findAllFeedbacks(){
-    const feedbacks: Feedbacklog[] = await this.feedbackService.findAll();
-    return await Promise.all(feedbacks.map(async (feedback) => {
-      const sender = await feedback.sender;
-      const reciever = await feedback.reciever;
-      return { id: feedback.feedbacklogID,
-        Feedback: feedback.feedback,
-        Sender: sender.email,
-        Reciever: reciever.email,
-      }
-    }));
-=======
+
   async findAllFeedbacks() {
     return await this.feedbackService.findAll();
->>>>>>> b9212882ea0c7d5ba865ea5b9c79e7173144347a
   }
 
   @Post('/new')

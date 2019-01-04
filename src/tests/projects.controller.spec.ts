@@ -67,10 +67,10 @@ describe('Projects Controller', () => {
         };
 
         // // Act
-        await projectCtrl.memberFeedbacklog(memberInfo);
+        await projectCtrl.memberFeedbacklog(memberInfo, '');
 
         // Assert
-        expect(projectService.getMemberFeedbacklog).toHaveBeenCalledTimes(1);;
+        expect(projectService.getMemberFeedbacklog).toHaveBeenCalledTimes(1);
     });
 
     it('should call ProjectService getMembers method', async () => {
@@ -83,7 +83,7 @@ describe('Projects Controller', () => {
         await projectCtrl.showMembers('1');
 
         // Assert
-        expect(projectService.getMembers).toHaveBeenCalledTimes(1);;
+        expect(projectService.getMembers).toHaveBeenCalledTimes(1);
     });
 
 });
