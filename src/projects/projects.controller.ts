@@ -1,7 +1,7 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Teams } from './../data/entities/teams.entity';
 import { AddProjectDTO } from './../models/user/projects.dto';
-import { Controller, Get, Post, Body, Param, BadRequestException, Request, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException, Request, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Roles } from '../common';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
@@ -59,8 +59,10 @@ export class ProjectsController {
 
     @Roles('Team Lead', 'Admin')
     @UseGuards(AuthGuard(), RolesGuard)
-    async addProject(@Body() project: AddProjectDTO): Promise<string> {
+    async addProject(@Body(new ValidationPipe({
+        transform: true, whitelist: true,
+      })) project: AddProjectDTO): Promise<string> {
         await this.projectService.addProject(project);
-        return 'Project added in database';
+        return `Project ${project.projectName} with start date ${project.startDate}, end date ${project.endDate} was successfully created!`;
     }
 }

@@ -8,13 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
 import { Users } from '../../data/entities/users.entity';
+import { Teams } from 'src/data/entities/teams.entity';
+import { ChangeTeamDTO } from 'src/models/change-team.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
-
   ) { }
 
   async registerUser(user) {
@@ -58,10 +59,10 @@ export class UsersService {
   }
 
   async getUser(user) {
-    try {
-      return this.usersRepository.findOneOrFail({ where: { username: user.username } });
-    } catch (error) {
-      throw new BadRequestException('User not found');
-    }
+      return this.usersRepository.findOneOrFail({ 
+        select: ['userID', 'username', 'email', 'firstName', 'lastName', 'role'],
+        where: { username: user.username }
+      });
   }
+
 }

@@ -1,8 +1,12 @@
+import { ChangeTeamDTO } from './../models/change-team.dto';
 import { AuthService } from './../auth/auth.service';
 import { UserRegisterDTO } from '../models/user/user-register.dto';
-import { Controller, Body, Post, BadRequestException, Param, Get, ValidationPipe } from '@nestjs/common';
+import { Controller, Body, Post, BadRequestException, Param, Get, ValidationPipe, UseGuards } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
 import { UserLoginDTO } from '../models/user/user-login.dto';
+import { Roles } from 'src/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/guards/roles/roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -10,12 +14,13 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService) { }
 
+  @Roles('Admin')
+  @UseGuards(AuthGuard(), RolesGuard)
   @Get(':username')
   gerUser(@Param() param) {
-    if (!(+param.username)) {
-      return this.usersService.getUser(param);
-    }
-    throw new BadRequestException('Username cannot be number');
+      return this.usersService.getUser(param).catch(() => {
+        throw new BadRequestException(`No user found!`);
+      });
   }
 
   @Get('login')
