@@ -1,32 +1,63 @@
+import { JwtPayload } from './../interfaces/jwt-payload';
 import { UsersService } from '../common/core/users.service';
+import { UserLoginDTO } from '../models/user/user-login.dto';
 
 describe('Users Service', () => {
     let usersService: UsersService;
-    let user = {};
+    let userRepository: any;
     beforeEach(() => {
-        usersService = new UsersService(null);
-        user = {
-            username: 'm.bechev',
-            password: 'TainoObichamAzis',
-            email: 'neshtosi@abv.bg',
-            firstName: 'Martin',
-            lastName: 'Bechev',
+        userRepository = {
+            findOne: () => { },
+            findOneOrFail: () => { },
         };
+        usersService = new UsersService(userRepository);
     });
 
-    it('should call registerUser method', async () => {
+    it('should call userRepository findOne method from registerUser method', () => {
         // Arrange
-        jest.spyOn(usersService, 'registerUser');
+        jest.spyOn(userRepository, 'findOne');
 
-        // Act & Assert
-        expect(usersService.registerUser(user)).toReturn;
+        // Act
+        usersService.registerUser('');
+
+        // Assert
+        expect(userRepository.findOne).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getUser method', async () => {
+    it('should call userRepository findOneOrFail method from getUser method', () => {
         // Arrange
-        jest.spyOn(usersService, 'getUser');
+        jest.spyOn(userRepository, 'findOneOrFail');
 
-        // Act & Assert
-        expect(usersService.getUser(user)).toReturn;
+        // Act
+        usersService.getUser('');
+
+        // Assert
+        expect(userRepository.findOneOrFail).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call userRepository findOne method from signIn method', () => {
+        // Arrange
+        jest.spyOn(userRepository, 'findOne');
+        const user: UserLoginDTO = {
+            username: '',
+            password: '1032',
+        };
+
+        // Act
+        usersService.signIn(user);
+
+        // Assert
+        expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call userRepository findOne method from validateUser method', () => {
+        // Arrange
+        jest.spyOn(userRepository, 'findOne');
+        const payload: any = {};
+        // Act
+        usersService.validateUser(payload);
+
+        // Assert
+        expect(userRepository.findOne).toHaveBeenCalledTimes(1);
     });
 });

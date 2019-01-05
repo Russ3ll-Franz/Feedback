@@ -1,68 +1,71 @@
 import { AddProjectDTO } from '../models/user/projects.dto';
 import { ProjectsService } from '../projects/projects.service';
-import { ProjectsController } from '../projects/projects.controller';
-
-jest.mock('./../projects/projects.service');
-jest.mock('../projects/projects.controller');
 
 describe('Projects Service', () => {
-    let projectCtrl: ProjectsController;
     let projectService: ProjectsService;
+    let projectRepo: any;
 
-    beforeEach(async () => {
-        projectService = new ProjectsService(null);
-        projectCtrl = new ProjectsController(projectService);
+    beforeEach(() => {
+        projectRepo = {
+            findOne: () => { },
+            findOneOrFail: () => { },
+            find: () => { },
+        };
+        projectService = new ProjectsService(projectRepo);
     });
 
-    it('should call addProject method', async () => {
+    it('should call projectRepository findOne method from addProject method', () => {
         // Arrange
-        jest.spyOn(projectService, 'addProject').mockImplementation(() => {
-            return 'test';
-        });
+        jest.spyOn(projectRepo, 'findOne');
         const project: AddProjectDTO = new AddProjectDTO();
 
-        // Act & Assert
-        expect(projectService.addProject(project)).toBe('test');
+        // Act
+        projectService.addProject(project);
+        // Assert
+        expect(projectRepo.findOne).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getMembers method', async () => {
+    it('should call projectRepository find method from findAll method', () => {
         // Arrange
-        jest.spyOn(projectService, 'getMembers').mockImplementation(() => {
-            return 'test';
-        });
+        jest.spyOn(projectRepo, 'find');
 
-        // Act & Assert
-        expect(projectService.getMembers('')).toBe('test');
+        // Act
+        projectService.findAll();
+
+        // Assert
+        expect(projectRepo.find).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getProject method', async () => {
+    it('should call projectRepository findOneOrFail method from getProject method', () => {
         // Arrange
-        jest.spyOn(projectService, 'getProject').mockImplementation(() => {
-            return 'test';
-        });
+        jest.spyOn(projectRepo, 'findOneOrFail');
 
-        // Act & Assert
-        expect(projectService.getProject('')).toBe('test');
+        // Act
+        projectService.getProject('1');
+
+        // Assert
+        expect(projectRepo.findOneOrFail).toHaveBeenCalledTimes(1);
     });
 
-    it('should call findAll method', async () => {
+    it('should call projectRepository findOneOrFail method from getMembers method', () => {
         // Arrange
-        jest.spyOn(projectService, 'findAll').mockImplementation(() => {
-            return 'test';
-        });
+        jest.spyOn(projectRepo, 'findOneOrFail');
 
-        // Act & Assert
-        expect(projectService.findAll()).toBe('test');
+        // Act
+        projectService.getMembers('1');
+
+        // Assert
+        expect(projectRepo.findOneOrFail).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getMemberFeedbacklog method', async () => {
+    it('should call projectRepository findOneOrFail method from getMemberFeedbacklog method', () => {
         // Arrange
-        jest.spyOn(projectService, 'getMemberFeedbacklog').mockImplementation(() => {
-            return 'test';
-        });
+        jest.spyOn(projectRepo, 'findOneOrFail');
 
-        // Act & Assert
-        expect(projectService.getMemberFeedbacklog('')).toBe('test');
+        // Act
+        projectService.getMemberFeedbacklog('');
+
+        // Assert
+        expect(projectRepo.findOneOrFail).toHaveBeenCalledTimes(1);
     });
-
 });
