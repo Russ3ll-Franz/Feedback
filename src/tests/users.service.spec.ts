@@ -1,7 +1,4 @@
-import { UsersService } from './../common/core/users.service';
-import { Users } from '../data/entities/users.entity';
-import { FeedbackDTO } from '../models/user/feedback.dto';
-import { FeedbackService } from '../feedbacks/feedbacks.service';
+import { UsersService } from '../common/core/users.service';
 
 describe('Users Service', () => {
     let usersService: UsersService;

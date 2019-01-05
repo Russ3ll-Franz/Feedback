@@ -1,8 +1,8 @@
-import { UserRegisterDTO } from './../models/user/user-register.dto';
-import { UserLoginDTO } from './../models/user/user-login.dto';
-import { AuthService } from './../auth/auth.service';
-import { UsersController } from './../users/users.controller';
-import { UsersService } from './../common/core/users.service';
+import { UserRegisterDTO } from '../models/user/user-register.dto';
+import { UserLoginDTO } from '../models/user/user-login.dto';
+import { AuthService } from '../auth/auth.service';
+import { UsersController } from '../users/users.controller';
+import { UsersService } from '../common/core/users.service';
 
 jest.mock('../common/core/users.service.ts'); // Users Service
 jest.mock('../auth/auth.service.ts'); // Auth Service
