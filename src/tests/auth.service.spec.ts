@@ -31,7 +31,7 @@ describe('Auth Service', () => {
         expect(userService.signIn).toHaveBeenCalledTimes(1);
     });
 
-    it('should call usersService validateUsermethod from validateUser method', () => {
+    it('should call usersService validateUser method from validateUser method', () => {
         // Arrange
         jest.spyOn(userService, 'validateUser').mockImplementation(() => {
             return 'test';
