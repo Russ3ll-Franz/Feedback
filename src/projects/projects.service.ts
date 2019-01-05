@@ -1,4 +1,3 @@
-import { FileService } from './../common/core/file.service';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Teams } from './../data/entities/teams.entity';
 import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
@@ -12,13 +11,18 @@ export class ProjectsService {
         private readonly projectRepository: Repository<Teams>) { }
 
     async addProject(project: AddProjectDTO) {
-        const projectFound = await this.projectRepository.findOne({ where: { projectName: project.projectName } });
+        try {
+            const projectFound = await this.projectRepository.findOne({ where: { projectName: project.projectName } });
 
-        if (projectFound) {
-            throw new BadRequestException('There is already such project added!');
+            if (projectFound) {
+                throw new BadRequestException('There is already such project added!');
+            }
+
+            await this.projectRepository.create(project);
+        } catch (error) {
+            throw new BadRequestException();
         }
 
-        await this.projectRepository.create(project);
         const result = await this.projectRepository.save([project]);
         return result;
     }
@@ -107,7 +111,7 @@ export class ProjectsService {
 
         if (Object.keys(member).length === 0) {
             throw new BadRequestException('Check username',
-             `User with username: ${memberInfo.username} does not exist or is not in team with id ${ memberInfo.id }`);
+                `User with username: ${memberInfo.username} does not exist or is not in team with id ${memberInfo.id}`);
         }
 
         return member;
