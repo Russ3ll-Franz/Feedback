@@ -1,10 +1,9 @@
-import { ChangeTeamDTO } from './../models/change-team.dto';
 import { AuthService } from './../auth/auth.service';
 import { UserRegisterDTO } from '../models/user/user-register.dto';
 import { Controller, Body, Post, BadRequestException, Param, Get, ValidationPipe, UseGuards } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
 import { UserLoginDTO } from '../models/user/user-login.dto';
-import { Roles } from 'src/common';
+import { Roles } from '../common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
 
@@ -18,9 +17,16 @@ export class UsersController {
   @UseGuards(AuthGuard(), RolesGuard)
   @Get(':username')
   gerUser(@Param() param) {
-      return this.usersService.getUser(param).catch(() => {
-        throw new BadRequestException(`No user found!`);
-      });
+    try {
+      return this.usersService.getUser(param);
+    } catch (error) {
+      throw new BadRequestException(`No user found!`);
+    }
+    /*
+    return this.usersService.getUser(param).catch(() => {
+      throw new BadRequestException(`No user found!`);
+    });
+    */
   }
 
   @Get('login')
