@@ -13,13 +13,11 @@ import { TestUtils } from './utils/test.utils';
 
 describe('AppController (e2e)', async () => {
   let app: INestApplication;
-  console.log(__dirname);
   let connection;
   let testUtils: TestUtils;
 
   // beforeEach(() => reloadTestingDatabases(connection));
   // afterAll(() => closeTestingConnections(connection));
-
 
   beforeEach(async () => {
     const moduleFixture = await Test.createTestingModule({

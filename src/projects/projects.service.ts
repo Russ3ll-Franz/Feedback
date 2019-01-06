@@ -1,16 +1,24 @@
+import { Users } from 'src/data/entities/users.entity';
+import { ManageMembersDTO } from './../models/user/manage-members.dto';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Teams } from './../data/entities/teams.entity';
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable, BadRequestException, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
+import { Repository, EntityManager } from 'typeorm';
 
 @Injectable()
 export class ProjectsService {
     constructor(
         @InjectRepository(Teams)
-        private readonly projectRepository: Repository<Teams>) { }
+        private readonly projectRepository: Repository<Teams>,
+        @InjectRepository(Users)
+        private readonly usersRepository: Repository<Users>,
+        @InjectEntityManager()
+        private entityManager: EntityManager,
+        ) { }
 
     async addProject(project: AddProjectDTO) {
+        project.teamMembers = 0;
         try {
             const projectFound = await this.projectRepository.findOne({ where: { projectName: project.projectName } });
 
@@ -115,5 +123,67 @@ export class ProjectsService {
         }
 
         return member;
+    }
+
+    async manageMembers(body: ManageMembersDTO, requestingUser): Promise<string> {
+        let project: Teams;
+        let user: Users;
+        await this.usersRepository.findOneOrFail({ where: { username: body.teamMember } }).then((res) => {
+            user = res;
+        }).catch((err) => {
+            throw new BadRequestException(`There is no user with username ${body.teamMember}`);
+        });
+        await this.projectRepository.findOneOrFail(body.teamID).then((res) => {
+            project = res;
+        }).catch((err) => {
+            throw new BadRequestException(`There is no team with ID ${body.teamID}`);
+        });
+
+        if (requestingUser.role !== 'Admin' && project.teamLead !== requestingUser.userName){
+            throw new UnauthorizedException('You are not the Team Lead of this team!');
+        }
+
+        const isUserMember = project.user.filter((u: Users) => {
+            return u.username === user.username;
+        });
+
+        if (body.action === 'add'){
+            if (isUserMember.length !== 0){
+                throw new BadRequestException('The member you are trying to add is already in the team!');
+            }
+            await this.entityManager.query(
+                `INSERT INTO teams_user_users (teamsTeamID, usersUserID) VALUES (${project.teamID}, ${user.userID})`,
+            )
+            await this.projectRepository.update({teamID: project.teamID}, { teamMembers: project.teamMembers + 1 });
+            // const newProject: Teams = project;
+            // newProject.user.push(user);
+            // newProject.teamMembers = newProject.teamMembers + 1;
+            // this.entityManager.update(Teams, { user: project.user }, { user: newProject.user });
+            return `Successfully added user ${user.username} to project ${project.projectName}`;
+        }
+
+        if (body.action === 'remove'){
+            if (isUserMember.length === 0){
+                throw new BadRequestException('There is no such member in the team you have specified!');
+            }
+            if (project.user.length === 0){
+                throw new BadRequestException(`The team is empty!`);
+            }
+            await this.entityManager.query(
+                `DELETE FROM teams_user_users WHERE teamsTeamID = ${project.teamID} AND usersUserID = ${user.userID} limit 1`,
+            )
+            await this.projectRepository.update({teamID: project.teamID}, { teamMembers: project.teamMembers - 1 });
+            // const newProject: Teams = project;
+
+            // newProject.user = newProject.user.filter((u: Users) => {
+            //     return u !== user;
+            // });
+
+            // newProject.teamMembers = newProject.teamMembers - 1;
+            // this.projectRepository.update({ user: project.user }, { user: newProject.user});
+            return `Successfully removed user ${user.username} to project ${project.projectName}`;
+        }
+
+        return 'How did you manage to do this? Report to the creators the error and the path.';
     }
 }

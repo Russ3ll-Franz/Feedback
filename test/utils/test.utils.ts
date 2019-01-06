@@ -54,7 +54,6 @@ export class TestUtils {
       x => entities.push({ name: x.name, tableName: x.tableName })
     );
 
-    console.log(entities);
     return entities;
   }
 

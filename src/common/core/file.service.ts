@@ -24,10 +24,6 @@ export class FileService {
   static fileFilter(req: any, file, cb) {
     const ext = contentType(file.mimetype);
     const ext1 = file.mimetype;
-    // console.log(ext1);
-    // if (ext.) {
-    //   return cb(new Error('Extension not allowed'), false); // FileIntercepter is completely ignoring this.
-    // }
     return cb(null, true);
   }
 }

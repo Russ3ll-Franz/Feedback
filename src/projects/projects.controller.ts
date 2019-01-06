@@ -5,6 +5,7 @@ import { Controller, Get, Post, Body, Param, BadRequestException, Request, Query
 import { ProjectsService } from './projects.service';
 import { Roles } from '../common';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
+import { ManageMembersDTO } from 'src/models/user/manage-members.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -14,7 +15,6 @@ export class ProjectsController {
 
     @Roles('Team Lead', 'Admin', 'User')
     @UseGuards(AuthGuard(), RolesGuard)
-    // projects?id=1&username=m.bechev
     async memberFeedbacklog(@Query() memberInfo, @Request() req): Promise<any> {
         if ((+memberInfo.id) && !(+memberInfo.username)) {
             return this.projectService.getMemberFeedbacklog(memberInfo);
@@ -64,5 +64,16 @@ export class ProjectsController {
       })) project: AddProjectDTO): Promise<string> {
         await this.projectService.addProject(project);
         return `Project ${project.projectName} with start date ${project.startDate}, end date ${project.endDate} was successfully created!`;
+    }
+
+    @Post('manage-members')
+
+    @Roles('Team Lead', 'Admin')
+    @UseGuards(AuthGuard(), RolesGuard)
+    async manageMembers(@Body(new ValidationPipe({
+        transform: true, whitelist: true,
+      })) body: ManageMembersDTO,
+                        @Request() req): Promise<string> {
+        return await this.projectService.manageMembers(body, req);
     }
 }

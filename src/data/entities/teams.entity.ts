@@ -1,8 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
 import { Users } from './users.entity';
 @Entity({
-    name: 'teams'
-    ,
+    name: 'teams',
 })
 export class Teams {
 
@@ -34,7 +33,7 @@ export class Teams {
     endDate: string;
 
     @Column('int', {
-        nullable: false,
+        default: 0,
 
         name: 'teamMembers',
     })

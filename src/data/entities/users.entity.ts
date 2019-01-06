@@ -1,6 +1,6 @@
 import { Teams } from './teams.entity';
 import { Feedbacklog } from './feedbacklog.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity({
     name: 'users',
@@ -79,7 +79,7 @@ export class Users {
     role: string;
 
     @ManyToMany(type => Teams, team => team.user)
-    team: Teams[];
+    team: Promise<Teams[]>;
 
     @OneToMany(type => Feedbacklog, feedbacklog => feedbacklog.reciever, { eager: true })
     received: Feedbacklog[];

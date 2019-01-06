@@ -1,3 +1,4 @@
+
 # Feedback project
 
 # Problem
@@ -208,7 +209,27 @@ Will return you the specified project with all of it's members the in the same f
     "endDate":  "2018-04-15",
     
     "teamMembers":  "4"; 
+- If the date is in the wrong format yyyy.mm.dd you will be thrown an error!
+- If there is a project with the name you have specified, you will be thrown `BadRequestException('There is already such project added!')`
+- If you provide good data you will create a new project and will get the following message `Project ${project.projectName} with start date ${project.startDate}, end date ${project.endDate} was successfully created!`
 
+
+#### `localhost:3000/projects/manage-members/`
+You can use this route to add or remove a user from a given team.
+This route accepts three parameters where the first must be either **add** or **remove** the second is the **username** and the third is the **teamID**
+`
+	"action": "add",
+	"teamMember": "aaster23",
+	"teamID": "1"
+`
+- This route is accessible only to **Admins** and **Team Leads!**
+- If the teamMember's username is wrong you will be thrown `BadRequestException(There is no user with username ${username})`
+- If the teamID is wrong you will be thrown `BadRequestException(There is no team with ID ${teamID});`
+- If the member you are trying to add is already in the team you will get `BadRequestException(The member you are trying to add is already in the team!)`
+- If the member you are trying to remove is not in the team you will get `BadRequestException(There is no such member in the team you have specified!);`
+- If the team is empty and you try to remove a member you will get `BadRequestException(The team is empty!);`
+- If the data you provide is right on add action you will get `Successfully added user ${username} to project ${projectName}`
+- If the data you provide is right on remove action you will get `Successfully removed user ${username} to project ${projectName}`
 # Admin-panel routes:
 ### Post routes:
 
@@ -233,4 +254,4 @@ Will return either `${user.username} is a/an ${user.role}` if the data is correc
 ### Martin Bechev - martinbechev@gmail.com and  Georgi Yordanov - aaster23@protonmail.com
 
 
-##### This is a training project made for the Telerik Academy Alpha 
+##### This is a training project made for the Telerik Academy Alpha
