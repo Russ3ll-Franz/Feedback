@@ -4,7 +4,7 @@
 INSERT INTO users (userID, email, password, username, firstName, lastName, role)
 VALUES (1, 'aaster@abv.bg', '$2b$10$vsEYxz85aNLLi1v6QFwaN.U4Xf0ouqgpZQEmwHYSrGOUuJvzYs4ma', 'aaster23', 'Georgi', 'Yordanov', 'Admin'),
 (2, 'martin.bechev@abv.bg', '$2b$10$ikeKNOOFSq3m6q/zMeGm0uDD6x4c4YLTf9taHHIswnQpEB1NvjBIS', 'm.bechev', 'Martin', 'Bechev', 'Admin'),
-(3, 'lacho.jokera@abv.bg', '$$2b$10$uofb2/E3u.pdAShY.kKZ2.e6m1yycYACQQW6OFXiDJtla.6EEEQTS', 'lachoroba', 'Lachezar', 'Dimitrov', 'Team Lead'),
+(3, 'lacho.jokera@abv.bg', '$2b$10$uofb2/E3u.pdAShY.kKZ2.e6m1yycYACQQW6OFXiDJtla.6EEEQTS', 'lachoroba', 'Lachezar', 'Dimitrov', 'Team Lead'),
 (4, 'hristo@abv.bg', '$2b$10$ynl96hRn0LYZnhkv/fOgUes/WKzstUXyZFREAJcJRxcA.nJCV5t4a', 'iceek', 'Hristo', 'Hristov', 'Team Lead'),
 (5, 'pesho@abv.bg', '$2b$10$yie7oaAMaTmorXU29jv5pebpgUlz.3BNG7PjnXnDjg6MfCPZMIsee', 'pesho123', 'Pesho', 'Peshev', 'User'),
 (6, 'ivan@abv.bg', '$2b$10$xqMsWEEoi8xyY8cSrvpKiOSRAwLQON1UN2QPXWMEjvAZsKbMAIMOi', 'ivan123', 'Ivan', 'Ivanov', 'User'),

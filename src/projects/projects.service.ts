@@ -17,7 +17,7 @@ export class ProjectsService {
         private entityManager: EntityManager,
         ) { }
 
-    async addProject(project: AddProjectDTO) {
+    async addProject(project: AddProjectDTO, teamLead) {
         project.teamMembers = 0;
         try {
             const projectFound = await this.projectRepository.findOne({ where: { projectName: project.projectName } });
@@ -26,9 +26,15 @@ export class ProjectsService {
                 throw new BadRequestException('There is already such project added!');
             }
 
-            await this.projectRepository.create(project);
+            let createdProject: Teams;
+            await this.entityManager.save(Teams, project).then(async (res) => {
+                createdProject = await this.projectRepository.findOne({ where: { projectName: project.projectName } })
+            });
+            await this.entityManager.query(
+                `INSERT INTO teams_team_lead_users (teamsTeamID, usersUserID) VALUES (${createdProject.teamID}, ${teamLead.user.userID})`,
+            );
         } catch (error) {
-            throw new BadRequestException();
+            throw new BadRequestException(error);
         }
 
         const result = await this.projectRepository.save([project]);
@@ -138,8 +144,9 @@ export class ProjectsService {
         }).catch((err) => {
             throw new BadRequestException(`There is no team with ID ${body.teamID}`);
         });
-
-        if (requestingUser.role !== 'Admin' && project.teamLead !== requestingUser.userName){
+        const isTeamLead = await this.entityManager.query(`SELECT * FROM teams_team_lead_users WHERE usersUserID = ${requestingUser.user.userID}
+        AND teamsTeamID = ${project.teamID};`);
+        if (requestingUser.role !== 'Admin' && isTeamLead.length === 0){
             throw new UnauthorizedException('You are not the Team Lead of this team!');
         }
 

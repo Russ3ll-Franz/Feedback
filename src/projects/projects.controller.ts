@@ -61,8 +61,9 @@ export class ProjectsController {
     @UseGuards(AuthGuard(), RolesGuard)
     async addProject(@Body(new ValidationPipe({
         transform: true, whitelist: true,
-      })) project: AddProjectDTO): Promise<string> {
-        await this.projectService.addProject(project);
+      })) project: AddProjectDTO,
+                     @Request() req): Promise<string> {
+        await this.projectService.addProject(project, req);
         return `Project ${project.projectName} with start date ${project.startDate}, end date ${project.endDate} was successfully created!`;
     }
 
