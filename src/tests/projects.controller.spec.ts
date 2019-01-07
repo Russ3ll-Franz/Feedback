@@ -21,7 +21,7 @@ describe('Projects Controller', () => {
         const project: AddProjectDTO = new AddProjectDTO();
 
         // // Act
-        await projectCtrl.addProject(project, { user: {userID: 0}});
+        await projectCtrl.addProject(project, { user: {userID: 0} });
 
         // Assert
         expect(projectService.addProject).toHaveBeenCalledTimes(1);
