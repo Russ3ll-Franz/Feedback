@@ -1,9 +1,11 @@
+import { ManageMembersDTO } from './../models/user/manage-members.dto';
 import { AddProjectDTO } from '../models/user/projects.dto';
 import { ProjectsService } from '../projects/projects.service';
 
 describe('Projects Service', () => {
     let projectService: ProjectsService;
     let projectRepo: any;
+    let usersRepo: any;
 
     beforeEach(() => {
         projectRepo = {
@@ -11,7 +13,12 @@ describe('Projects Service', () => {
             findOneOrFail: () => { },
             find: () => { },
         };
-        projectService = new ProjectsService(projectRepo);
+        usersRepo = {
+            findOne: () => { },
+            findOneOrFail: () => { },
+            find: () => { },
+        };
+        projectService = new ProjectsService(projectRepo, usersRepo, null);
     });
 
     it('should call projectRepository findOne method from addProject method', () => {
@@ -67,5 +74,21 @@ describe('Projects Service', () => {
 
         // Assert
         expect(projectRepo.findOneOrFail).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call findOneOrFail method from manageMembers method', async () => {
+        // Arrange
+        jest.spyOn(usersRepo, 'findOneOrFail');
+        const body: ManageMembersDTO = {
+            action: 'add',
+            teamMember: 'm.bechev',
+            teamID: '1',
+        };
+
+        // Act
+        projectService.manageMembers(body, '');
+
+        // Assert
+        expect(usersRepo.findOneOrFail).toHaveBeenCalledTimes(1);
     });
 });

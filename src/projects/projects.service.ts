@@ -1,4 +1,4 @@
-import { Users } from 'src/data/entities/users.entity';
+import { Users } from '../data/entities/users.entity';
 import { ManageMembersDTO } from './../models/user/manage-members.dto';
 import { AddProjectDTO } from './../models/user/projects.dto';
 import { Teams } from './../data/entities/teams.entity';
@@ -160,7 +160,7 @@ export class ProjectsService {
             }
             await this.entityManager.query(
                 `INSERT INTO teams_user_users (teamsTeamID, usersUserID) VALUES (${project.teamID}, ${user.userID})`,
-            )
+            );
             await this.projectRepository.update({teamID: project.teamID}, { teamMembers: project.teamMembers + 1 });
             // const newProject: Teams = project;
             // newProject.user.push(user);
@@ -178,7 +178,7 @@ export class ProjectsService {
             }
             await this.entityManager.query(
                 `DELETE FROM teams_user_users WHERE teamsTeamID = ${project.teamID} AND usersUserID = ${user.userID} limit 1`,
-            )
+            );
             await this.projectRepository.update({teamID: project.teamID}, { teamMembers: project.teamMembers - 1 });
             // const newProject: Teams = project;
 
