@@ -27,7 +27,7 @@ describe('Projects Service', () => {
         const project: AddProjectDTO = new AddProjectDTO();
 
         // Act
-        projectService.addProject(project);
+        projectService.addProject(project, { user: {userID: 0} });
         // Assert
         expect(projectRepo.findOne).toHaveBeenCalledTimes(1);
     });
