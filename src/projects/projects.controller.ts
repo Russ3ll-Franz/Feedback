@@ -5,7 +5,7 @@ import { Controller, Get, Post, Body, Param, BadRequestException, Request, Query
 import { ProjectsService } from './projects.service';
 import { Roles } from '../common';
 import { RolesGuard } from '../common/guards/roles/roles.guard';
-import { ManageMembersDTO } from 'src/models/user/manage-members.dto';
+import { ManageMembersDTO } from '../models/user/manage-members.dto';
 
 @Controller('projects')
 export class ProjectsController {
